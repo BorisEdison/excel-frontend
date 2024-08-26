@@ -5,7 +5,7 @@ export class gridOperations {
         this.sideGrid = sideGrid;
         this.topGrid = topGrid;
 
-        this.cellInput = document.querySelector(".text");
+        this.cellInput = document.querySelector(".input-box");
 
         this.selectIndexX
         this.selectIndexY

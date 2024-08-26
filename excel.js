@@ -9,7 +9,6 @@ addSheetBtn.addEventListener("click", function() {
     dictionary["sheet" + count] = new sheet(100, 60, 60, 20,"sheet"+count);
     count++
     addSheetTabBtn()
-    console.log(dictionary)
 })
 
 

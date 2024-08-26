@@ -6,6 +6,7 @@ import { scroll } from "./sheetFunctionalities/scroll.js"
 import { gridOperations } from "./sheetFunctionalities/gridOperations.js"
 import { graph } from "./sheetFunctionalities/graph.js"
 import { resize } from "./sheetFunctionalities/resize.js"
+import { fileOperations } from "./sheetFunctionalities/fileOperations.js"
 
 export default class sheet {
     constructor (rows, columns, width, height,sheetName) {
@@ -17,8 +18,8 @@ export default class sheet {
         this.scroll = new scroll (this.dimension, this.mainGrid, this.sideGrid, this.topGrid)
         this.gridOperations = new gridOperations(this.dimension, this.mainGrid, this.sideGrid, this.topGrid)
         this.graph = new graph(this.dimension)
-        this.graph = new graph(this.dimension)
-        this.rezie = new resize(this.dimension)
+        this.resize = new resize(this.dimension)
+        this.fileOperations = new fileOperations(this.dimension)
 
         this.sheetName = sheetName
         this.init()

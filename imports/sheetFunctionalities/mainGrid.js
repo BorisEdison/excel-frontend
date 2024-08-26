@@ -41,7 +41,7 @@ export class mainGrid{
                 if (i == 0) {
                     this.dimension.cWidthPrefixSum.push(this.dimension.cWidthPrefixSum[j] + this.dimension.width);
                 }
-                var cell = new cellStruct(1 + j * this.dimension.width + 0.5, 1 + i * this.dimension.height + 0.5, this.dimension.width, this.dimension.height, Math.floor(Math.random()*1000), false, 0, this.mainCtx);
+                var cell = new cellStruct(1 + j * this.dimension.width + 0.5, 1 + i * this.dimension.height + 0.5, this.dimension.width, this.dimension.height, " ", false, 0, this.mainCtx);
                 this.mainCells[i].push(cell);
             }
         }

@@ -53,14 +53,17 @@ body {
 .focus-zone-right {
   color: white;
 }
-input {
+.file-upload-btn {
+  color: white;
+}
+.input-box {
   display: none;
   position: absolute;
   padding: 0;
   outline: none;
   border: 2px solid #107C41;
 }  
-input:focus{
+.input-box:focus{
 border: 2px solid #107C41;
 }
 
