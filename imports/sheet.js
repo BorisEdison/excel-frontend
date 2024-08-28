@@ -1,7 +1,7 @@
+import { dimension } from "./sheetFunctionalities/dimension.js"
 import { mainGrid } from "./sheetFunctionalities/mainGrid.js"
 import { topGrid } from "./sheetFunctionalities/topGrid.js"
 import { sideGrid } from "./sheetFunctionalities/sideGrid.js"
-import { dimension } from "./sheetFunctionalities/dimension.js"
 import { scroll } from "./sheetFunctionalities/scroll.js"
 import { gridOperations } from "./sheetFunctionalities/gridOperations.js"
 import { graph } from "./sheetFunctionalities/graph.js"
@@ -14,12 +14,12 @@ export default class sheet {
         this.mainGrid = new mainGrid (this.dimension)
         this.topGrid = new topGrid (this.dimension)
         this.sideGrid = new sideGrid (this.dimension)
-
-        this.scroll = new scroll (this.dimension, this.mainGrid, this.sideGrid, this.topGrid)
+        
+        this.fileOperations = new fileOperations(this.dimension,this.mainGrid)
+        this.scroll = new scroll (this.dimension, this.mainGrid, this.sideGrid, this.topGrid,this.fileOperations)
         this.gridOperations = new gridOperations(this.dimension, this.mainGrid, this.sideGrid, this.topGrid)
         this.graph = new graph(this.dimension)
-        this.resize = new resize(this.dimension)
-        this.fileOperations = new fileOperations(this.dimension)
+        this.resize = new resize(this.dimension,this.mainGrid,this.topGrid,this.sideGrid)
 
         this.sheetName = sheetName
         this.init()

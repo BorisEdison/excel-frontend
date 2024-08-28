@@ -7,6 +7,7 @@ export class sideGrid {
         this.sideCells = [];
         this.sideCanvas;
         this.sideCtx;
+        this.rect;
 
         this.init();
     }
@@ -16,6 +17,7 @@ export class sideGrid {
         this.sideCanvas.height = screen.height - 30;
         this.sideCanvas.width = 60
         this.sideCtx = this.sideCanvas.getContext("2d")
+        this.rect = this.sideCanvas.getBoundingClientRect()
 
         this.getCells()
         this.render()

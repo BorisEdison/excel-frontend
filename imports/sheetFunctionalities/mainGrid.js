@@ -4,10 +4,10 @@ export class mainGrid{
  
     constructor(dimension){
         this.dimension = dimension;
-
         this.mainCanvas;
         this.mainCtx;
         this.mainCells = [];
+        this.rect;
 
         this.init();
     }
@@ -17,6 +17,7 @@ export class mainGrid{
         this.mainCanvas.height = screen.height - 30;
         this.mainCanvas.width = screen.width;
         this.mainCtx = this.mainCanvas.getContext("2d")
+        this.rect = this.mainCanvas.getBoundingClientRect()
 
         this.dimension.shiftTopY = 0;
         this.dimension.shiftBottomY = this.mainCanvas.height;
@@ -53,6 +54,7 @@ export class mainGrid{
             for (let j = this.dimension.leftIndex; j < this.dimension.rightIndex; j++) {
             this.mainCells[i][j].yVal = this.dimension.rHeightPrefixSum[i] - this.dimension.shiftTopY + 0.5;
             this.mainCells[i][j].xVal = this.dimension.cWidthPrefixSum[j] - this.dimension.shiftLeftX + 0.5;
+            this.mainCells[i][j].width = this.dimension.cWidthPrefixSum[j+1] - this.dimension.cWidthPrefixSum[j] 
             this.mainCells[i][j].drawCell();
           }
         }    
@@ -67,7 +69,7 @@ export class mainGrid{
           this.mainCells[currentRowLength + i - 1] = [];
     
           for (let j = 0; j < currentColumnLength - 1; j++) {
-            var cell = new cellStruct(1,1,this.dimension.width,this.dimension.height, Math.floor(Math.random()*1000), false, 0, this.mainCtx);
+            var cell = new cellStruct(1,1,this.dimension.width,this.dimension.height, "", false, 0, this.mainCtx);
             this.mainCells[currentRowLength + i - 1].push(cell);
           }
         }
@@ -82,7 +84,7 @@ export class mainGrid{
                 if(i==0){
                     this.dimension.cWidthPrefixSum.push(this.dimension.cWidthPrefixSum[currentColumnLength + j - 1] + this.dimension.width);
                 }
-                var cell = new cellStruct(1, 1, this.dimension.width, this.dimension.height, Math.floor(Math.random()*1000), false, 0, this.mainCtx);
+                var cell = new cellStruct(1, 1, this.dimension.width, this.dimension.height, "", false, 0, this.mainCtx);
                 this.mainCells[i].push(cell);
           }
         }

@@ -7,6 +7,7 @@ export class topGrid {
         this.topCells = [];
         this.topCanvas;
         this.topCtx;
+        this.rect;
 
         this.init();
     }
@@ -16,6 +17,7 @@ export class topGrid {
       this.topCanvas.height = 20
       this.topCanvas.width = screen.width
       this.topCtx = this.topCanvas.getContext("2d")
+      this.rect = this.topCanvas.getBoundingClientRect();
 
       this.getCells()
       this.render()
@@ -31,6 +33,7 @@ export class topGrid {
       this.topCtx.reset(0,0,this.topCanvas.width,this.topCanvas.height)
       for(let i=this.dimension.leftIndex; i<this.dimension.rightIndex; i++){
         this.topCells[i].xVal = this.dimension.cWidthPrefixSum[i] - this.dimension.shiftLeftX + 0.5;
+        this.topCells[i].width = this.dimension.cWidthPrefixSum[i+1] - this.dimension.cWidthPrefixSum[i] 
         this.topCells[i].drawCell()
       }
     }

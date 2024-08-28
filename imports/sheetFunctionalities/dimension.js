@@ -16,9 +16,9 @@ export class dimension{
         this.cWidthPrefixSum=[0];
         this.rHeightPrefixSum=[0];
 
-        this.shiftTop;
+        this.shiftTop = 0;
         this.shiftBottom;
-        this.shiftLeft;
+        this.shiftLeft = 0;
         this.shiftRight;
 
         this.topIndex;

@@ -1,9 +1,10 @@
 export class scroll {
-    constructor(dimension, mainGrid, sideGrid, topGrid) {
+    constructor(dimension, mainGrid, sideGrid, topGrid, fileOperations) {
         this.dimension = dimension;
         this.mainGrid = mainGrid;
         this.sideGrid = sideGrid;
         this.topGrid = topGrid;
+        this.fileOperations = fileOperations
 
         this.containerHeight;
         this.containerWidth;
@@ -90,6 +91,7 @@ export class scroll {
                 }
 
                 this.mainGrid.addRows(20)
+                this.fileOperations.getFile(this.dimension.rHeightPrefixSum.length-21,this.dimension.rHeightPrefixSum.length-1)
                 this.sideGrid.addCells(20)
 
                 this.containerHeight = this.dimension.rHeightPrefixSum[this.dimension.rHeightPrefixSum.length - 1];
