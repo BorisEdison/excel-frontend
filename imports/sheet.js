@@ -15,11 +15,11 @@ export default class sheet {
         this.topGrid = new topGrid (this.dimension)
         this.sideGrid = new sideGrid (this.dimension)
         
+        this.graph = new graph(this.dimension, this.mainGrid)
         this.fileOperations = new fileOperations(this.dimension,this.mainGrid)
-        this.scroll = new scroll (this.dimension, this.mainGrid, this.sideGrid, this.topGrid,this.fileOperations)
         this.gridOperations = new gridOperations(this.dimension, this.mainGrid, this.sideGrid, this.topGrid)
-        this.graph = new graph(this.dimension)
-        this.resize = new resize(this.dimension,this.mainGrid,this.topGrid,this.sideGrid)
+        this.scroll = new scroll (this.dimension, this.mainGrid, this.sideGrid, this.topGrid, this.gridOperations, this.fileOperations)
+        this.resize = new resize(this.dimension,this.mainGrid,this.topGrid,this.sideGrid, this.gridOperations)
 
         this.sheetName = sheetName
         this.init()

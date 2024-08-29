@@ -1,9 +1,10 @@
 export class resize{
-    constructor(dimension,mainGrid,topGrid,sideGrid){
+    constructor(dimension,mainGrid,topGrid,sideGrid, gridOperations){
         this.dimension=dimension;
         this.mainGrid=mainGrid;
         this.topGrid=topGrid;
         this.sideGrid=sideGrid;
+        this.gridOperations = gridOperations
 
         this.isMouseDown=false;
         this.ind=-1;
@@ -17,7 +18,7 @@ export class resize{
         this.sideGrid.sideCanvas.addEventListener('mousedown',this.mouseDown.bind(this))
         window.addEventListener('mouseup',this.mouseUp.bind(this))
     }
-    
+
     mouseDown(evt){
         this.isMouseDown=true;
     }
@@ -34,6 +35,7 @@ export class resize{
 
                 this.mainGrid.render();
                 this.topGrid.render();
+                this.gridOperations.inputBox()
             }
         }
         else{
@@ -57,7 +59,7 @@ export class resize{
         if(distance<=5){
             return -1;
         }
-        
+
         let left = 0;
         let right = this.dimension.cWidthPrefixSum.length - 1;
         let result = -1;

@@ -34,6 +34,7 @@ export class sideGrid {
         this.sideCtx.reset(0,0,this.sideCanvas.width, this.sideCanvas.height)
         for(let i = this.dimension.topIndex; i<this.dimension.bottomIndex; i++){
             this.sideCells[i].yVal = this.dimension.rHeightPrefixSum[i] - this.dimension.shiftTopY + 0.5;
+            this.sideCells[i].height = this.dimension.rHeightPrefixSum[i+1] - this.dimension.rHeightPrefixSum[i];
             this.sideCells[i].drawCell()
         }
     }

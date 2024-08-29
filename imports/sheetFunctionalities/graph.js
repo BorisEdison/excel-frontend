@@ -1,6 +1,7 @@
 export class graph {
-    constructor(dimension) {
+    constructor(dimension, mainGrid) {
       this.dimension = dimension
+      this.mainGrid = mainGrid
 
       this.graphCanvasElement = document.getElementById("myChart");
       this.graph = document.querySelector(".graph");
@@ -15,7 +16,7 @@ export class graph {
     init() {
         this.barGraphBtn.addEventListener("click", () => {
             this.graph.style.display = "inline-block";
-            this.drawBarGraph();
+            this.drawBarGraph();  
           });
       
           this.lineGraphBtn.addEventListener("click", () => {
@@ -40,50 +41,69 @@ export class graph {
       }
     }
 
+    getGraphValue(){
+      let xValues=[];
+      let dataSets=[];
+      if(this.isHorizantalSizebigger()){
+          for(let i=0; i<this.dimension.selectedSide.length; i++){
+              let dataSet={
+                  label:this.dimension.selectedSide[i].value,   // sticker or no. of colours
+                  data:[],
+                  borderWidth: 1,
+              }
+              for(let j= 0; j<this.dimension.selectedTop.length; j++){
+                  xValues[j]= this.dimension.selectedTop[j].value;
+                  dataSet.data.push(this.mainGrid.mainCells[this.dimension.sideValues[i]][this.dimension.getColumnNumber(this.dimension.topValues[j])-1].value)
+              }
+
+              dataSets.push(dataSet)
+          }
+      }
+      else{
+          for(let i=0 ; i< this.dimension.selectedTop.length;i++){
+              let dataSet={
+                  label: this.dimension.selectedTop[i].value,
+                  data:[],
+                  borderWidth: 1,
+              }
+              for(let j=0;j<this.dimension.selectedSide.length;j++){
+                  xValues[j]= this.dimension.selectedSide[j].value;
+                  dataSet.data.push(this.mainGrid.mainCells[this.dimension.sideValues[j]][this.dimension.getColumnNumber(this.dimension.topValues[i])-1].value)
+              }
+              dataSets.push(dataSet)
+          }
+      }
+      return {xValues,dataSets};
+  }
+
+  isHorizantalSizebigger(){
+    if((this.dimension.selectedTop.length)>(this.dimension.selectedSide.length)) return true;
+    
+    return false;
+  }
+
     //  * Drawing Bar Graph
     drawBarGraph() {
       this.destroyGraph()
+      let {xValues:xValues,dataSets:dataSets}=this.getGraphValue();
       this.draw = new Chart(this.graphCanvasElement, {
         type: "bar",
         data: {
-          labels: this.dimension.sideValues,
-          datasets: [
-            {
-              label: "",
-              data: this.dimension.mainValues,
-              borderWidth: 1,
-            },
-          ],
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true,
-            },
-          },
-        },
+          labels: xValues,
+          datasets: dataSets
+        }
       });
     }
   
     //  * Drawing Line Graph
     drawLineGraph() {
       this.destroyGraph()
+      let {xValues:xValues,dataSets:dataSets}=this.getGraphValue();
       this.draw = new Chart(this.graphCanvasElement, {
         type : 'line',
-        data : {
-          labels : this.dimension.sideValues,
-          datasets : [
-              {
-                data : this.dimension.mainValues,
-                label : "",
-                borderColor : "#3cba9f",
-                fill : false
-              }]
-        },
-        options : {
-          title : {
-            display : true,
-          }
+        data: {
+          labels: xValues,
+          datasets: dataSets
         }
       });
     }
@@ -91,18 +111,12 @@ export class graph {
     //  * Drawing Pie Chart
     drawPieGraph(){
       this.destroyGraph()
+      let {xValues:xValues,dataSets:dataSets}=this.getGraphValue();
       this.draw=new Chart(this.graphCanvasElement, {
         type : 'pie',
-        data : {
-          labels : this.dimension.sideValues,
-          datasets : [ {
-            data : this.dimension.mainValues,
-          } ]
-        },
-        options : {
-          title : {
-            display : true,
-          }
+        data: {
+          labels: xValues,
+          datasets: dataSets
         }
       });
     }

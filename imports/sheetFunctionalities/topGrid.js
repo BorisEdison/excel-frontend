@@ -24,7 +24,7 @@ export class topGrid {
     }
     getCells(){
         for (let j = 0; j < this.dimension.columns; j++) {
-            var cell = new cellStruct(1 + j * this.dimension.width + 0.5, 1, this.dimension.width, this.dimension.height, `${this.getColumnName(j + 1)}`, false, 0, this.topCtx);
+            var cell = new cellStruct(1 + j * this.dimension.width + 0.5, 1, this.dimension.width, this.dimension.height, `${this.dimension.getColumnName(j + 1)}`, false, 0, this.topCtx);
             this.topCells.push(cell);
         }
     }
@@ -45,15 +45,5 @@ export class topGrid {
           this.topCells.push(cell);
       }
     }
-    getColumnName(num) {
-        var s = "",
-          t;
-        while (num > 0) {
-          t = (num - 1) % 26;
-          s = String.fromCharCode(65 + t) + s;
-          num = ((num - t) / 26) | 0;
-        }
-        return s || undefined;
-      }
 
 }

@@ -69,16 +69,18 @@ export class gridOperations {
           this.isInput = false
         }
 
-        this.selectedCell = this.mainGrid.mainCells[this.selectIndexY][this.selectIndexX]
-        this.cellInput.value = this.selectedCell.value;
-        this.cellInput.style.display = "block";
-        this.cellInput.style.top = this.selectedCell.yVal + this.mainGrid.mainCanvas.offsetTop;
-        this.cellInput.style.left = this.selectedCell.xVal + this.mainGrid.mainCanvas.offsetLeft;
-        this.cellInput.style.height = this.selectedCell.height;
-        this.cellInput.style.width = this.selectedCell.width;
-        this.isInput = true
+        this.inputBox()
     }
-
+    inputBox(){
+      this.selectedCell = this.mainGrid.mainCells[this.selectIndexY][this.selectIndexX]
+      this.cellInput.value = this.selectedCell.value;
+      this.cellInput.style.display = "block";
+      this.cellInput.style.top = this.selectedCell.yVal + this.mainGrid.mainCanvas.offsetTop;
+      this.cellInput.style.left = this.selectedCell.xVal + this.mainGrid.mainCanvas.offsetLeft;
+      this.cellInput.style.height = this.selectedCell.height;
+      this.cellInput.style.width = this.selectedCell.width;
+      this.isInput = true
+    }
     updateText(cell,value){
       cell.value = value;
       cell.drawCell()

@@ -1,9 +1,10 @@
 export class scroll {
-    constructor(dimension, mainGrid, sideGrid, topGrid, fileOperations) {
+    constructor(dimension, mainGrid, sideGrid, topGrid, gridOperations, fileOperations) {
         this.dimension = dimension;
         this.mainGrid = mainGrid;
         this.sideGrid = sideGrid;
         this.topGrid = topGrid;
+        this.gridOperations = gridOperations
         this.fileOperations = fileOperations
 
         this.containerHeight;

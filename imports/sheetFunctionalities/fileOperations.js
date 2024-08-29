@@ -60,7 +60,6 @@ export class fileOperations {
           const res = await response.json();
           var values = res.map(item => Object.values(item))
           for(var i = offset ; i < limit ; i++){
-            console.log(i)
             for(var j = 0; j<values[0].length; j++){
               this.mainGrid.mainCells[i][j].value = values[i-offset][j] 
             }

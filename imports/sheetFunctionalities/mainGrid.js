@@ -55,6 +55,7 @@ export class mainGrid{
             this.mainCells[i][j].yVal = this.dimension.rHeightPrefixSum[i] - this.dimension.shiftTopY + 0.5;
             this.mainCells[i][j].xVal = this.dimension.cWidthPrefixSum[j] - this.dimension.shiftLeftX + 0.5;
             this.mainCells[i][j].width = this.dimension.cWidthPrefixSum[j+1] - this.dimension.cWidthPrefixSum[j] 
+            this.mainCells[i][j].height = this.dimension.rHeightPrefixSum[i+1] - this.dimension.rHeightPrefixSum[i] 
             this.mainCells[i][j].drawCell();
           }
         }    
