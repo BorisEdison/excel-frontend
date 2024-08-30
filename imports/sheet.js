@@ -9,7 +9,7 @@ import { resize } from "./sheetFunctionalities/resize.js"
 import { fileOperations } from "./sheetFunctionalities/fileOperations.js"
 
 export default class sheet {
-    constructor (rows, columns, width, height,sheetName) {
+    constructor (rows, columns, width, height,sheetNum) {
         this.dimension = new dimension ( rows, columns, width, height)
         this.mainGrid = new mainGrid (this.dimension)
         this.topGrid = new topGrid (this.dimension)
@@ -21,7 +21,7 @@ export default class sheet {
         this.scroll = new scroll (this.dimension, this.mainGrid, this.sideGrid, this.topGrid, this.gridOperations, this.fileOperations)
         this.resize = new resize(this.dimension,this.mainGrid,this.topGrid,this.sideGrid, this.gridOperations)
 
-        this.sheetName = sheetName
+        this.sheetNum = sheetNum
         this.init()
     }
     init() {
@@ -78,11 +78,11 @@ export default class sheet {
         row2Element.appendChild(sideCanvasElement)
         row2Element.appendChild(sheetElement)
 
-        const spreadsheetElement = document.createElement("div")
-        spreadsheetElement.setAttribute("class","spreadsheet")
-        spreadsheetElement.classList.add(`${this.sheetName}`)
+        this.spreadsheetElement = document.createElement("div")
+        this.spreadsheetElement.setAttribute("class",` ${this.sheetNum}  spreadsheet`)
+        // this.spreadsheetElement.classList.add(`)
 
-        spreadsheetElement.appendChild(row1Element)
-        spreadsheetElement.appendChild(row2Element)
+        this.spreadsheetElement.appendChild(row1Element)
+        this.spreadsheetElement.appendChild(row2Element)
     }
 }

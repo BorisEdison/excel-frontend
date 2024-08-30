@@ -18,7 +18,7 @@ export class fileOperations {
       let formData = new FormData();        
       formData.append("csvFile", file);
       try {
-          response = await fetch('https://localhost:7220/controller/uploadCsv', 
+          response = await fetch('https://localhost:7220/ExcelApi/uploadCsv', 
               {
               method: "POST", 
               body: formData
@@ -48,7 +48,7 @@ export class fileOperations {
           "offset": offset
       };        
       try {
-          response = await fetch('https://localhost:7220/controller/getCsv',
+          response = await fetch('https://localhost:7220/ExcelApi/getCsv',
               {
                   method: "POST",
                   headers: {

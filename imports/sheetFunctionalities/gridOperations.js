@@ -44,9 +44,9 @@ export class gridOperations {
         this.mainGrid.mainCanvas.addEventListener("mousedown", this.handleMouseDown.bind(this))
         this.mainGrid.mainCanvas.addEventListener("mousemove", this.handleMouseMove.bind(this))
         window.addEventListener("mouseup", this.handleMouseUp.bind(this))
-        document.addEventListener("keydown", (e) => {
-          this.handleMarchingAnt(e);
-        });
+        // document.addEventListener("keydown", (e) => {
+        //   this.handleMarchingAnt(e);
+        // });
     }
 
     handleMouseDown (e) {
@@ -141,7 +141,7 @@ export class gridOperations {
           this.getValues(this.dimension.topValues,this.dimension.selectedTop)
           this.getValues(this.dimension.mainValues,this.dimension.selectedMain)
           this.getValues(this.dimension.sideValues,this.dimension.selectedSide)
-``
+
           // border
           // if (this.isAnimated && this.dimension.selectedMain.length > 1) {
           //   this.drawDottedRect();

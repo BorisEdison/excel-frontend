@@ -24,6 +24,10 @@ export class resize{
     }
 
     mouseUp(evt){
+        this.mainGrid.render();
+        if(this.dimension.selectedMain.length>=1){
+            this.gridOperations.inputBox()
+        }
         this.isMouseDown=false;
     }
 
@@ -33,9 +37,7 @@ export class resize{
                 this.topGrid.topCanvas.style.cursor="col-resize";
                 this.addExtra(this.ind,evt.movementX);
 
-                this.mainGrid.render();
                 this.topGrid.render();
-                this.gridOperations.inputBox()
             }
         }
         else{
