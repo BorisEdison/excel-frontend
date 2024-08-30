@@ -11,6 +11,13 @@ export class gridOperations {
         this.selectIndexY
         this.selectedCell
 
+        this.xValStart
+        this.yValStart
+        this.xValEnd
+        this.yValEnd
+        
+        this.dashOffset = 0
+
         this.currentIndexX
         this.currentIndexY
         this.previousIndexX = -1
@@ -27,7 +34,8 @@ export class gridOperations {
         this.min
         this.max
 
-        this.isSelecting
+        this.isSelecting = false
+        this.isAnimated = false
         this.isInput = false
         this.eventListeners()
     }
@@ -36,10 +44,14 @@ export class gridOperations {
         this.mainGrid.mainCanvas.addEventListener("mousedown", this.handleMouseDown.bind(this))
         this.mainGrid.mainCanvas.addEventListener("mousemove", this.handleMouseMove.bind(this))
         window.addEventListener("mouseup", this.handleMouseUp.bind(this))
+        document.addEventListener("keydown", (e) => {
+          this.handleMarchingAnt(e);
+        });
     }
 
     handleMouseDown (e) {
         this.isSelecting = true
+        this.isAnimated = false
         this.selectIndexX = this.dimension.cellXIndex(this.dimension.shiftLeftX + e.offsetX);
         this.selectIndexY = this.dimension.cellYIndex(this.dimension.shiftTopY + e.offsetY);
 
@@ -121,10 +133,29 @@ export class gridOperations {
             }
           }
 
+          this.xValStart = this.dimension.selectedMain[0].xVal
+          this.yValStart = this.dimension.selectedMain[0].yVal
+          this.xValEnd = this.dimension.selectedMain[this.dimension.selectedMain.length -1].xVal + this.dimension.selectedMain[this.dimension.selectedMain.length -1].width
+          this.yValEnd = this.dimension.selectedMain[this.dimension.selectedMain.length -1].yVal + this.dimension.selectedMain[this.dimension.selectedMain.length -1].height
+
           this.getValues(this.dimension.topValues,this.dimension.selectedTop)
           this.getValues(this.dimension.mainValues,this.dimension.selectedMain)
           this.getValues(this.dimension.sideValues,this.dimension.selectedSide)
+``
+          // border
+          // if (this.isAnimated && this.dimension.selectedMain.length > 1) {
+          //   this.drawDottedRect();
+          // } else {
+            this.mainGrid.mainCtx.strokeStyle = "rgba(0, 128, 0, 0.8)";
+              this.mainGrid.mainCtx.strokeRect(
+                this.xValStart,
+                this.yValStart,
+                this.xValEnd - this.xValStart,
+                this.yValEnd - this.yValStart
+            );
+          // }
       }
+
 
       // mathematical parameter
       this.count = 0
@@ -186,4 +217,39 @@ export class gridOperations {
             arr[i].selectCell();
         }
     } 
+
+  // marching ant
+  //   handleMarchingAnt(e) {
+  //     if (e.key === "Control" && this.dimension.selectedMain.length > 1) {
+  //       this.isAnimated = true;
+  //         window.cancelAnimationFrame(this.rafId);
+  //       this.march();
+  //     }
+  //   }
+
+  //   march() {
+  //     this.dashOffset++;
+  //     if (this.dashOffset > 20) {
+  //       this.dashOffset = 0;
+  //     }
+  //     this.drawDottedRect();
+  //     this.rafId = window.requestAnimationFrame(() => {
+  //       this.mainGrid.render();
+  //       this.march();
+  //     });
+  //   }
+
+  // drawDottedRect() {
+  //   this.mainGrid.mainCtx.setLineDash([5, 5]);
+  //   this.mainGrid.mainCtx.lineDashOffset = - this.dashOffset;
+  //   this.mainGrid.mainCtx.strokeStyle = "rgba(0, 128, 0, 0.9)";
+  //   this.mainGrid.mainCtx.lineWidth = 2;
+  //   this.mainGrid.mainCtx.strokeRect(
+  //     this.xValStart,
+  //     this.yValStart,
+  //     this.xValEnd - this.xValStart,
+  //     this.yValEnd - this.yValStart
+  //   );
+  //   this.mainGrid.mainCtx.setLineDash([]);
+  // }
 }
