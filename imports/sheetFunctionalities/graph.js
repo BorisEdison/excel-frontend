@@ -1,14 +1,46 @@
+import { Dimension } from "./dimension.js";
+import { MainGrid } from "./mainGrid.js";
+
 export class Graph {
+  /**
+   *
+   * @param {Dimension} dimension
+   * @param {MainGrid} mainGrid
+   */
   constructor(dimension, mainGrid) {
+    /**
+     * @type { Dimension }
+     */
     this.dimension = dimension;
+    /**
+     * @type { MainGrid }
+     */
     this.mainGrid = mainGrid;
 
-    // Cache DOM elements
+    // DOM elements
+    /**
+     * @type { HTMLElement}
+     */
     this.graphCanvasElement = document.getElementById("myChart");
+    /**
+     * @type { HTMLElement}
+     */
     this.graph = document.querySelector(".graph");
+    /**
+     * @type { HTMLElement}
+     */
     this.barGraphBtn = document.querySelector(".graph-bar-btn");
+    /**
+     * @type { HTMLElement}
+     */
     this.lineGraphBtn = document.querySelector(".graph-line-btn");
+    /**
+     * @type { HTMLElement}
+     */
     this.pieGraphBtn = document.querySelector(".graph-pie-btn");
+    /**
+     * @type { HTMLElement}
+     */
     this.graphCloseBtn = document.querySelector(".graph-close");
 
     // Initialize event listeners
@@ -37,14 +69,20 @@ export class Graph {
     });
   }
 
-  // Destroy existing graph instance if it exists
+  /**
+   * Destroys the existing graph instance if it exists.
+   * @returns {void}
+   */
   destroyGraph() {
     if (this.draw) {
       this.draw.destroy();
     }
   }
 
-  // Get values for the graph based on the selected dimensions
+  /**
+   * Retrieves the x-axis values and datasets for generating a graph based on the selected dimensions.
+   * @returns {{ xValues: string[], dataSets: Object[] }} An object containing the x-axis values (`xValues`) and the datasets (`dataSets`) for the graph.
+   */
   getGraphValue() {
     let xValues = [];
     let dataSets = [];
@@ -97,12 +135,20 @@ export class Graph {
     return { xValues, dataSets };
   }
 
-  // Check if horizontal size is larger than vertical size
+  /**
+   * Checks if the horizontal size (number of selected top cells) is larger than the vertical size (number of selected side cells).
+   * @returns {boolean} Returns `true` if the horizontal size is larger than the vertical size, otherwise `false`.
+   */
   isHorizontalSizeBigger() {
-    return this.dimension.selectedTop.length > this.dimension.selectedSide.length;
+    return (
+      this.dimension.selectedTop.length > this.dimension.selectedSide.length
+    );
   }
 
-  // Draw a bar graph
+  /**
+   * Draws a bar graph on the specified canvas element.
+   * @returns {void}
+   */
   drawBarGraph() {
     this.destroyGraph();
     const { xValues, dataSets } = this.getGraphValue();
@@ -115,7 +161,10 @@ export class Graph {
     });
   }
 
-  // Draw a line graph
+  /**
+   * Draws a line graph on the specified canvas element.
+   * @returns {void}
+   */
   drawLineGraph() {
     this.destroyGraph();
     const { xValues, dataSets } = this.getGraphValue();
@@ -128,7 +177,10 @@ export class Graph {
     });
   }
 
-  // Draw a pie chart
+  /**
+   * Draws a pie chart on the specified canvas element.
+   * @returns {void}
+   */
   drawPieGraph() {
     this.destroyGraph();
     const { xValues, dataSets } = this.getGraphValue();

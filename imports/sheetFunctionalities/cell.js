@@ -1,13 +1,48 @@
 export class CellStruct {
+  /**
+   * 
+   * @param { Number } xVal 
+   * @param { Number } yVal 
+   * @param { Number } width 
+   * @param { Number } height 
+   * @param { Number } value 
+   * @param { Boolean } isClicked 
+   * @param { Boolean } isSelected 
+   * @param { CanvasRenderingContext2D } ctx 
+   */
   constructor(xVal, yVal, width, height, value, isClicked, isSelected, ctx) {
     // Initialize cell properties
+    /**
+     * @type { number }
+     */
     this.xVal = xVal; // X-coordinate of the cell
+    /**
+     * @type { number }
+     */
     this.yVal = yVal; // Y-coordinate of the cell
+    /**
+     * @type { number }
+     */
     this.width = width; // Width of the cell
+    /**
+     * @type { number }
+     */
     this.height = height; // Height of the cell
+    /**
+     *  @type { number }
+     */
     this.value = value; // Value to display in the cell
+    /**
+     * @type { boolean }
+     */
     this.isClicked = isClicked; // Boolean to track if the cell is clicked
+    /**
+     *  @type { Boolean }
+     */
     this.isSelected = isSelected; // Boolean to track if the cell is selected
+    /**
+     * @type { CanvasRenderingContext2D }
+     */
     this.ctx = ctx; // Canvas rendering context to draw on
   }
 

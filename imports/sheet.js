@@ -69,12 +69,55 @@ export class Sheet {
          */
         this.sheetNum = sheetNum;
 
+
+
         // Initialize the sheet UI
-        this.init();
+        this.createSheetElements();
+
+        // Set up the ResizeObserver
+        this.resizeObserver()
+    }
+
+    resizeObserver(){
+        this.resizeObserver = new ResizeObserver(this.handleResize.bind(this));
+        this.resizeObserver.observe(this.mainGrid.mainCanvas);
+    }
+
+    handleResize() {
+        this.scallingCanvas();
+    }
+
+    scallingCanvas() {
+        // tells the browser how many of the screen's actual pixels should be used to draw a single CSS pixel
+        const scale = window.devicePixelRatio; // Change to 1 on retina screens to see blurry canvas.
+
+        //scalling top canvas
+
+        this.topGrid.topCanvas.width = Math.floor(this.topGrid.topCanvas.clientWidth * scale)
+        this.topGrid.topCanvas.height = Math.floor(this.topGrid.topCanvas.clientHeight * scale)
+
+        this.topGrid.topCtx.scale(scale, scale)
+        //scalling side canvas
+
+        this.sideGrid.sideCanvas.width = Math.floor(this.sideGrid.sideCanvas.clientWidth * scale)
+        this.sideGrid.sideCanvas.height = Math.floor(this.sideGrid.sideCanvas.clientHeight * scale)
+
+        this.sideGrid.sideCtx.scale(scale, scale)
+
+        //scalling main canvas
+        this.mainGrid.mainCanvas.width = Math.floor(this.mainGrid.mainCanvas.clientWidth * scale)
+        this.mainGrid.mainCtx.height = Math.floor(this.mainGrid.mainCanvas.clientHeight * scale)
+
+        this.mainGrid.mainCtx.scale(scale, scale)
+
+        this.mainGrid.render()
+        this.topGrid.render()
+        this.sideGrid.render()
     }
 
 
-    init() {
+
+    createSheetElements() {
         // Create the corner canvas element (top-left corner of the grid)
         const cornerCanvasElement = document.createElement("canvas");
         cornerCanvasElement.setAttribute("width", "60");
@@ -118,18 +161,18 @@ export class Sheet {
         mainCanvasElement.setAttribute("id", "main-canvas");
 
         // Create the sheet element to hold the input field, main grid, and scrollbars
-        const sheetElement = document.createElement("div");
-        sheetElement.setAttribute("class", "sheet");
-        sheetElement.appendChild(inputElement);
-        sheetElement.appendChild(mainCanvasElement);
-        sheetElement.appendChild(trackYElement);
-        sheetElement.appendChild(trackXElement);
+        const mainSheetElement = document.createElement("div");
+        mainSheetElement.setAttribute("class", "sheet");
+        mainSheetElement.appendChild(inputElement);
+        mainSheetElement.appendChild(mainCanvasElement);
+        mainSheetElement.appendChild(trackYElement);
+        mainSheetElement.appendChild(trackXElement);
 
         // Row 2 contains the side canvas and the main sheet area
         const row2Element = document.createElement("div");
         row2Element.setAttribute("id", "row-2");
         row2Element.appendChild(sideCanvasElement);
-        row2Element.appendChild(sheetElement);
+        row2Element.appendChild(mainSheetElement);
 
         // Create the main container for the spreadsheet elements
         this.spreadsheetElement = document.createElement("div");

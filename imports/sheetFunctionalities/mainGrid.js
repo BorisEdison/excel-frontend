@@ -11,9 +11,21 @@ export class MainGrid {
          * @type { Dimension }
          */
         this.dimension = dimension; // Store dimension reference for grid properties
+        /** 
+         * @type { HTMLElement }
+         */
         this.mainCanvas; // Main canvas element
+        /**
+         * @type { CanvasRenderingContext2D }
+         */
         this.mainCtx; // 2D drawing context of the canvas
+        /**
+         * @type { Array<CellStruct> }
+         */
         this.mainCells = []; // Array to store cells of the grid
+        /**
+         * @type { DOMRect }
+         */
         this.rect; // Rectangular area of the canvas for mouse interaction
 
         this.init(); // Initialize the grid
@@ -25,9 +37,15 @@ export class MainGrid {
     init() {
         // Set up main canvas element and its context
         this.mainCanvas = document.getElementById("main-canvas");
-        this.mainCanvas.height = screen.height - 30; // Set canvas height dynamically
-        this.mainCanvas.width = screen.width; // Set canvas width dynamically
         this.mainCtx = this.mainCanvas.getContext("2d"); // Get 2D context for drawing
+
+        const scale = window.devicePixelRatio; // Change to 1 on retina screens to see blurry canvas.
+
+        //scalling main canvas
+        this.mainCanvas.width = Math.floor(this.mainCanvas.clientWidth * scale)
+        this.mainCanvas.height = Math.floor(this.mainCanvas.clientHeight * scale)
+        this.mainCtx.scale(scale, scale)
+
         this.rect = this.mainCanvas.getBoundingClientRect(); // Get canvas position and size
 
         // Initialize shifting values for grid rendering
@@ -51,6 +69,7 @@ export class MainGrid {
 
     /**
      * Generate cells based on grid dimensions.
+     * @returns { void }
      */
     getCells() {
         for (let i = 0; i < this.dimension.rows; i++) {
@@ -80,6 +99,7 @@ export class MainGrid {
 
     /**
      * Render cells on the canvas.
+     * @returns { void }
      */
     render() {
         this.mainCtx.clearRect(0, 0, this.mainCanvas.width, this.mainCanvas.height); // Clear the canvas

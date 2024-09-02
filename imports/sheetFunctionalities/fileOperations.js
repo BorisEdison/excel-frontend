@@ -1,8 +1,10 @@
+import { Dimension } from "./dimension.js";
+import { MainGrid  } from "./mainGrid.js";
 export class FileOperations {
   /**
    * Initializes the FileOperations class.
-   * @param {Object} dimension - Dimension object that includes topIndex.
-   * @param {Object} mainGrid - Main grid object with render method and mainCells property.
+   * @param {Dimension} dimension - Dimension object that includes topIndex.
+   * @param {MainGrid} mainGrid - Main grid object with render method and mainCells property.
    */
   constructor(dimension, mainGrid) {
     this.dimension = dimension;
