@@ -1,71 +1,89 @@
-export class fileOperations {
-    constructor(dimension,mainGrid) {
-        this.dimension = dimension;
-        this.mainGrid = mainGrid
-        this.init();
+export class FileOperations {
+  /**
+   * Initializes the FileOperations class.
+   * @param {Object} dimension - Dimension object that includes topIndex.
+   * @param {Object} mainGrid - Main grid object with render method and mainCells property.
+   */
+  constructor(dimension, mainGrid) {
+    this.dimension = dimension;
+    this.mainGrid = mainGrid;
+    this.init();  // Set up event listeners
+  }
+
+  /**
+   * Sets up event listeners for file upload.
+   */
+  init() {
+    // Attach change event listener to file upload button
+    document.querySelector('.file-upload-btn').addEventListener('change', (e) => {
+      if (e.target.files[0]) {
+        this.uploadFile(e.target.files[0]);  // Handle file upload
+      }
+    });
+  }
+
+  /**
+   * Uploads the selected file to the server.
+   * @param {File} file - The file to be uploaded.
+   */
+  async uploadFile(file) {
+    const formData = new FormData();
+    formData.append("csvFile", file);  // Append file to form data
+
+    try {
+      const response = await fetch('https://localhost:7220/ExcelApi/uploadCsv', {
+        method: "POST",
+        body: formData
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Server responded with an error:', errorText);
+        alert('Failed to upload the file');
+      } else {
+        alert('The file has been uploaded successfully.');
+
+        // Fetch the updated file data and render the grid
+        await this.getFile(this.dimension.topIndex, 100);
+        this.mainGrid.render();
+      }
+    } catch (error) {
+      console.error('Could not connect to server:', error);
+      alert('Could not connect to server');
     }
+  }
 
-    init() {
-        document.querySelector('.file-upload-btn').addEventListener('change',  (e) => {
-            if (e.target.files[0]) {
-                 this.uploadFile(e.target.files[0])
-            }
-          });
-    }
+  /**
+   * Retrieves file data from the server and updates the grid.
+   * @param {number} offset - The starting index for the data to retrieve.
+   * @param {number} limit - The number of rows to retrieve.
+   */
+  async getFile(offset, limit) {
+    const range = {
+      "limit": limit,
+      "offset": offset
+    };
 
-    async uploadFile(file) {
-      let response;
-      let formData = new FormData();        
-      formData.append("csvFile", file);
-      try {
-          response = await fetch('https://localhost:7220/ExcelApi/uploadCsv', 
-              {
-              method: "POST", 
-              body: formData
-              }
-          );    
-        if(!response.ok){
-          const errorText = await response.text();
-          console.error('Server responded with an error');
-          alert('Failed to upload the file');
-        } else {
-          alert('The file has been uploaded successfully.');
+    try {
+      const response = await fetch('https://localhost:7220/ExcelApi/getCsv', {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(range),
+      });
 
-          // get file from database
-          await this.getFile(this.dimension.topIndex, 100);
-          this.mainGrid.render();
+      const res = await response.json();
+      const values = res.map(item => Object.values(item));  // Convert response to array of values
+
+      // Ensure we don't go out of bounds
+      for (let i = 0; i < Math.min(limit, values.length); i++) {
+        for (let j = 0; j < values[0].length; j++) {
+          this.mainGrid.mainCells[i][j].value = values[i][j];
         }
-      } catch (error) {
-        console.error('could not connect to server');
-        alert('could not connect to server');
       }
-    } 
-
-    async getFile(offset, limit){
-      let response;
-      let range = {
-          "limit": limit,
-          "offset": offset
-      };        
-      try {
-          response = await fetch('https://localhost:7220/ExcelApi/getCsv',
-              {
-                  method: "POST",
-                  headers: {
-                      'Content-Type': 'application/json', 
-                  },
-                  body: JSON.stringify(range),
-              }
-          ); 
-          const res = await response.json();
-          var values = res.map(item => Object.values(item))
-          for(var i = offset ; i < limit ; i++){
-            for(var j = 0; j<values[0].length; j++){
-              this.mainGrid.mainCells[i][j].value = values[i-offset][j] 
-            }
-          }
-      } catch (error) {
-          console.error('could not get items');
-      }
+    } catch (error) {
+      console.error('Could not get items:', error);
     }
+  }
 }

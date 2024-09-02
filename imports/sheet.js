@@ -1,88 +1,142 @@
-import { dimension } from "./sheetFunctionalities/dimension.js"
-import { mainGrid } from "./sheetFunctionalities/mainGrid.js"
-import { topGrid } from "./sheetFunctionalities/topGrid.js"
-import { sideGrid } from "./sheetFunctionalities/sideGrid.js"
-import { scroll } from "./sheetFunctionalities/scroll.js"
-import { gridOperations } from "./sheetFunctionalities/gridOperations.js"
-import { graph } from "./sheetFunctionalities/graph.js"
-import { resize } from "./sheetFunctionalities/resize.js"
-import { fileOperations } from "./sheetFunctionalities/fileOperations.js"
+import { Dimension } from "./sheetFunctionalities/dimension.js";
+import { MainGrid } from "./sheetFunctionalities/mainGrid.js";
+import { TopGrid } from "./sheetFunctionalities/topGrid.js";
+import { SideGrid } from "./sheetFunctionalities/sideGrid.js";
+import { Scroll } from "./sheetFunctionalities/scroll.js";
+import { GridOperations } from "./sheetFunctionalities/gridOperations.js";
+import { Graph } from "./sheetFunctionalities/graph.js";
+import { RibbonContainer } from "./sheetFunctionalities/ribbonContainer.js";
+import { Resize } from "./sheetFunctionalities/resize.js";
+import { FileOperations } from "./sheetFunctionalities/fileOperations.js";
 
-export default class sheet {
-    constructor (rows, columns, width, height,sheetNum) {
-        this.dimension = new dimension ( rows, columns, width, height)
-        this.mainGrid = new mainGrid (this.dimension)
-        this.topGrid = new topGrid (this.dimension)
-        this.sideGrid = new sideGrid (this.dimension)
-        
-        this.graph = new graph(this.dimension, this.mainGrid)
-        this.fileOperations = new fileOperations(this.dimension,this.mainGrid)
-        this.gridOperations = new gridOperations(this.dimension, this.mainGrid, this.sideGrid, this.topGrid)
-        this.scroll = new scroll (this.dimension, this.mainGrid, this.sideGrid, this.topGrid, this.gridOperations, this.fileOperations)
-        this.resize = new resize(this.dimension,this.mainGrid,this.topGrid,this.sideGrid, this.gridOperations)
+export class Sheet {
+    /**
+     * @param {number} rows 
+     * @param {number} columns 
+     * @param {number} width 
+     * @param {number} height 
+     * @param {number} sheetNum 
+     */
+    constructor(rows, columns, width, height, sheetNum) {
+        /**
+         * @type {Dimension} - Initialize dimensions for the sheet
+         */
+        this.dimension = new Dimension(rows, columns, width, height);
 
-        this.sheetNum = sheetNum
-        this.init()
+        // Create the main, top, and side grids based on the dimensions
+        /**
+         * @type {MainGrid}
+         */
+        this.mainGrid = new MainGrid(this.dimension);
+        /**
+         * @type { TopGrid }
+         */
+        this.topGrid = new TopGrid(this.dimension);
+        /**
+         * @type { SideGrid }
+         */
+        this.sideGrid = new SideGrid(this.dimension);
+
+        // Initialize other functionalities of the sheet
+        /**
+         * @type { RibbonContainer }
+         */
+        this.ribbonContainer = new RibbonContainer();
+        /**
+         * @type { Graph }
+         */
+        this.graph = new Graph(this.dimension, this.mainGrid);
+        /**
+         * @type { FileOperations }
+         */
+        this.fileOperations = new FileOperations(this.dimension, this.mainGrid);
+        /**
+         * @type { GridOperations }
+         */
+        this.gridOperations = new GridOperations(this.dimension, this.mainGrid, this.sideGrid, this.topGrid);
+        /**
+         * @type { Scroll }
+         */
+        this.scroll = new Scroll(this.dimension, this.mainGrid, this.sideGrid, this.topGrid, this.gridOperations, this.fileOperations);
+        /**
+         * @type { Resize }
+         */
+        this.resize = new Resize(this.dimension, this.mainGrid, this.topGrid, this.sideGrid, this.gridOperations);
+
+        // Store the sheet number
+        /**
+         * @type { number } 
+         */
+        this.sheetNum = sheetNum;
+
+        // Initialize the sheet UI
+        this.init();
     }
+
+
     init() {
-        const cornerCanvasElement = document.createElement("canvas")
-        cornerCanvasElement.setAttribute("width", "60")
-        cornerCanvasElement.setAttribute("height","20")
+        // Create the corner canvas element (top-left corner of the grid)
+        const cornerCanvasElement = document.createElement("canvas");
+        cornerCanvasElement.setAttribute("width", "60");
+        cornerCanvasElement.setAttribute("height", "20");
 
-        const topCanvasElement = document.createElement("canvas")
-        topCanvasElement.setAttribute("id","top-canvas")
+        // Create the top canvas element for the top grid (headers)
+        const topCanvasElement = document.createElement("canvas");
+        topCanvasElement.setAttribute("id", "top-canvas");
 
-        const row1Element = document.createElement("div")
-        row1Element.setAttribute("id","row-1")
+        // Row 1 contains the corner and top canvas elements
+        const row1Element = document.createElement("div");
+        row1Element.setAttribute("id", "row-1");
+        row1Element.appendChild(cornerCanvasElement);
+        row1Element.appendChild(topCanvasElement);
 
-        row1Element.appendChild(cornerCanvasElement)
-        row1Element.appendChild(topCanvasElement)
+        // Create the side canvas element for the side grid (row numbers)
+        const sideCanvasElement = document.createElement("canvas");
+        sideCanvasElement.setAttribute("id", "side-canvas");
 
-        const sideCanvasElement = document.createElement("canvas")
-        sideCanvasElement.setAttribute("id","side-canvas")
+        // Create vertical scrollbar elements
+        const sliderYElement = document.createElement("div");
+        sliderYElement.setAttribute("id", "slider-y");
+        const trackYElement = document.createElement("div");
+        trackYElement.setAttribute("id", "track-y");
+        trackYElement.appendChild(sliderYElement);
 
-        const sliderYElement = document.createElement("div")
-        sliderYElement.setAttribute("id","slider-y")
+        // Create horizontal scrollbar elements
+        const sliderXElement = document.createElement("div");
+        sliderXElement.setAttribute("id", "slider-x");
+        const trackXElement = document.createElement("div");
+        trackXElement.setAttribute("id", "track-x");
+        trackXElement.appendChild(sliderXElement);
 
-        const trackYElement = document.createElement("div")
-        trackYElement.setAttribute("id","track-y")
+        // Create input field element for text input (for entering formulas or cell content)
+        const inputElement = document.createElement("input");
+        inputElement.setAttribute("type", "text");
+        inputElement.setAttribute("class", "text");
 
-        trackYElement.appendChild(sliderYElement)
+        // Create the main canvas element where the main grid is rendered
+        const mainCanvasElement = document.createElement("canvas");
+        mainCanvasElement.setAttribute("id", "main-canvas");
 
-        const sliderXElement = document.createElement("div")
-        sliderXElement.setAttribute("id","slider-x")
+        // Create the sheet element to hold the input field, main grid, and scrollbars
+        const sheetElement = document.createElement("div");
+        sheetElement.setAttribute("class", "sheet");
+        sheetElement.appendChild(inputElement);
+        sheetElement.appendChild(mainCanvasElement);
+        sheetElement.appendChild(trackYElement);
+        sheetElement.appendChild(trackXElement);
 
-        const trackXElement = document.createElement("div")
-        trackXElement.setAttribute("id","track-x")
+        // Row 2 contains the side canvas and the main sheet area
+        const row2Element = document.createElement("div");
+        row2Element.setAttribute("id", "row-2");
+        row2Element.appendChild(sideCanvasElement);
+        row2Element.appendChild(sheetElement);
 
-        trackXElement.appendChild(sliderXElement)
+        // Create the main container for the spreadsheet elements
+        this.spreadsheetElement = document.createElement("div");
+        this.spreadsheetElement.setAttribute("class", `${this.sheetNum} spreadsheet`);
 
-        const inputElement = document.createElement("input")
-        inputElement.setAttribute("type","text")
-        inputElement.setAttribute("class","text")
-
-        const mainCanvasElement = document.createElement("canvas")
-        mainCanvasElement.setAttribute("id","main-canvas")
-
-        const sheetElement = document.createElement("div")
-        sheetElement.setAttribute("class", "sheet")
-
-        sheetElement.appendChild(inputElement)
-        sheetElement.appendChild(mainCanvasElement)
-        sheetElement.appendChild(trackYElement)
-        sheetElement.appendChild(trackXElement)
-
-        const row2Element = document.createElement("div")
-        row2Element.setAttribute("id", "row-2")       
-        
-        row2Element.appendChild(sideCanvasElement)
-        row2Element.appendChild(sheetElement)
-
-        this.spreadsheetElement = document.createElement("div")
-        this.spreadsheetElement.setAttribute("class",` ${this.sheetNum}  spreadsheet`)
-        // this.spreadsheetElement.classList.add(`)
-
-        this.spreadsheetElement.appendChild(row1Element)
-        this.spreadsheetElement.appendChild(row2Element)
+        // Append both rows to the spreadsheet element
+        this.spreadsheetElement.appendChild(row1Element);
+        this.spreadsheetElement.appendChild(row2Element);
     }
 }

@@ -92,44 +92,5 @@
 
       <script type="module" src="./excel.js"></script>
 
-      <script>
-        var fileTabBtn = document.querySelector(".file-tab-btn");
-        var focusFile = document.querySelector('.focus-file')
-
-        var operationsTabBtn = document.querySelector(".operations-tab-btn");
-        var focusOperations = document.querySelector('.focus-operations')
-
-        var graphTabBtn = document.querySelector(".graph-tab-btn");
-        var focusGraph = document.querySelector('.focus-graph')
-
-        fileTabBtn.addEventListener("click", function () {
-          fileTabBtn.classList.add("active")
-          operationsTabBtn.classList.remove("active")
-          graphTabBtn.classList.remove("active")
-          focusFile.classList.remove("d-none")
-          focusOperations.classList.add("d-none")
-          focusGraph.classList.add("d-none")
-        });
-
-
-        operationsTabBtn.addEventListener("click", function () {
-          fileTabBtn.classList.remove("active")
-          operationsTabBtn.classList.add("active")
-          graphTabBtn.classList.remove("active")
-          focusFile.classList.add("d-none")
-          focusOperations.classList.remove("d-none")
-          focusGraph.classList.add("d-none")
-        });
-
-
-        graphTabBtn.addEventListener("click", function () {
-          fileTabBtn.classList.remove("active")
-          operationsTabBtn.classList.remove("active")
-          graphTabBtn.classList.add("active")
-          focusFile.classList.add("d-none")
-          focusOperations.classList.add("d-none")
-          focusGraph.classList.remove("d-none")     
-        });
-      </script>
 </body>
 </html>
