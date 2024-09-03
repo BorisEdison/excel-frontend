@@ -106,38 +106,16 @@ export class Sheet {
 
   scallingCanvas() {
     // tells the browser how many of the screen's actual pixels should be used to draw a single CSS pixel
-    const scale = window.devicePixelRatio; // Change to 1 on retina screens to see blurry canvas.
+    this.dimension.scale = window.devicePixelRatio; // Change to 1 on retina screens to see blurry canvas.
 
     //scalling top canvas
+    this.topGrid.setCanvasDimension()
 
-    this.topGrid.topCanvas.width = Math.floor(
-      this.topGrid.topCanvas.clientWidth * scale
-    );
-    this.topGrid.topCanvas.height = Math.floor(
-      this.topGrid.topCanvas.clientHeight * scale
-    );
-
-    this.topGrid.topCtx.scale(scale, scale);
     //scalling side canvas
-
-    this.sideGrid.sideCanvas.width = Math.floor(
-      this.sideGrid.sideCanvas.clientWidth * scale
-    );
-    this.sideGrid.sideCanvas.height = Math.floor(
-      this.sideGrid.sideCanvas.clientHeight * scale
-    );
-
-    this.sideGrid.sideCtx.scale(scale, scale);
+    this.sideGrid.setCanvasDimension()
 
     //scalling main canvas
-    this.mainGrid.mainCanvas.width = Math.floor(
-      this.mainGrid.mainCanvas.clientWidth * scale
-    );
-    this.mainGrid.mainCtx.height = Math.floor(
-      this.mainGrid.mainCanvas.clientHeight * scale
-    );
-
-    this.mainGrid.mainCtx.scale(scale, scale);
+    this.mainGrid.setCanvasDimension()
 
     this.mainGrid.render();
     this.topGrid.render();

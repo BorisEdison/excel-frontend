@@ -100,6 +100,10 @@ export class Dimension {
      * @type { number }
      */
     this.rightIndex; // Index of the right-most visible column
+    /**
+     * @type { number }
+     */
+    this.scale = window.devicePixelRatio; // scale ratio for device pixel ratio
   }
 
   /**

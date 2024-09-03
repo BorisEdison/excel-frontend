@@ -38,17 +38,24 @@ export class SideGrid {
     // Set up side canvas element and its context
     this.sideCanvas = document.getElementById("side-canvas");
     this.sideCtx = this.sideCanvas.getContext("2d"); // Get 2D context for drawing
-    
-    const scale = window.devicePixelRatio; // Change to 1 on retina screens to see blurry canvas.
-    this.sideCanvas.width = Math.floor(this.sideCanvas.clientWidth * scale)
-    this.sideCanvas.height = Math.floor(this.sideCanvas.clientHeight * scale)
-    this.sideCtx.scale(scale, scale)
+
+    this.setCanvasDimension() 
 
     this.rect = this.sideCanvas.getBoundingClientRect(); // Get canvas position and size
 
     // Generate initial cells for the side grid
     this.getCells();
     this.render(); // Render the side grid cells
+  }
+
+  /**
+   * set canvas height and width as per device pixel ratio
+   * @returns { void }
+   */
+  setCanvasDimension() {
+    this.sideCanvas.width = Math.floor(this.sideCanvas.clientWidth * this.dimension.scale)
+    this.sideCanvas.height = Math.floor(this.sideCanvas.clientHeight * this.dimension.scale)
+    this.sideCtx.scale(this.dimension.scale, this.dimension.scale)
   }
 
   /**

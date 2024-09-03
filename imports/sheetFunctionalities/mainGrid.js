@@ -41,10 +41,7 @@ export class MainGrid {
 
         const scale = window.devicePixelRatio; // Change to 1 on retina screens to see blurry canvas.
 
-        //scalling main canvas
-        this.mainCanvas.width = Math.floor(this.mainCanvas.clientWidth * scale)
-        this.mainCanvas.height = Math.floor(this.mainCanvas.clientHeight * scale)
-        this.mainCtx.scale(scale, scale)
+        this.setCanvasDimension()
 
         this.rect = this.mainCanvas.getBoundingClientRect(); // Get canvas position and size
 
@@ -65,6 +62,16 @@ export class MainGrid {
 
         // Render cells on canvas
         this.render();
+    }
+    
+    /**
+     * set canvas height and width as per device pixel ratio
+     * @returns { void }
+     */
+    setCanvasDimension() {
+        this.mainCanvas.width = Math.floor(this.mainCanvas.clientWidth * this.dimension.scale)
+        this.mainCanvas.height = Math.floor(this.mainCanvas.clientHeight * this.dimension.scale)
+        this.mainCtx.scale(this.dimension.scale, this.dimension.scale)
     }
 
     /**

@@ -41,16 +41,23 @@ export class TopGrid {
     this.topCanvas = document.getElementById("top-canvas");
     this.topCtx = this.topCanvas.getContext("2d"); // Get 2D context for drawing
 
-    const scale = window.devicePixelRatio; // Change to 1 on retina screens to see blurry canvas.
-    this.topCanvas.width = Math.floor(this.topCanvas.clientWidth * scale)
-    this.topCanvas.height = Math.floor(this.topCanvas.clientHeight * scale)
-    this.topCtx.scale(scale, scale)
+    this.setCanvasDimension()
 
     this.rect = this.topCanvas.getBoundingClientRect(); // Get canvas position and size
 
     // Generate initial cells for the top grid
     this.getCells();
     this.render(); // Render the top grid cells
+  }
+
+  /**
+   * set canvas height and width as per device pixel ratio
+   * @returns { void }
+   */
+  setCanvasDimension() {
+    this.topCanvas.width = Math.floor(this.topCanvas.clientWidth * this.dimension.scale)
+    this.topCanvas.height = Math.floor(this.topCanvas.clientHeight * this.dimension.scale)
+    this.topCtx.scale(this.dimension.scale, this.dimension.scale)
   }
 
   /**
