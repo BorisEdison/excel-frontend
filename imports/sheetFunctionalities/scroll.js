@@ -243,7 +243,7 @@ export class Scroll {
    this.containerHeight = this.dimension.rHeightPrefixSum[this.dimension.rHeightPrefixSum.length - 1];
    
    if (this.getAttInt(this.sliderY, "height") > 40) {
-    const newSliderYHeight = (this.mainGrid.mainCanvas.height * this.mainGrid.mainCanvas.height) / this.containerHeight
+      const newSliderYHeight = (this.mainGrid.mainCanvas.height * this.mainGrid.mainCanvas.height) / this.containerHeight
      this.sliderY.style.height = newSliderYHeight + "px";
      this.maxYTravel =this.getAttInt(this.trackY, "height") - newSliderYHeight;
    }    
@@ -252,72 +252,30 @@ export class Scroll {
     this.isScrollY = false;
 }
     
-  
   /**
    * Handles horizontal scrolling based on mouse movement.
    * @param {MouseEvent} e - The mouse event object.
    * @returns {void}
    */
   handleHorizontalScroll(e) {
-    this.xTravelled =
-      e.pageX - this.getAttInt(this.trackX, "left") - this.mouseDownXOffset;
- 
+    this.xTravelled = e.pageX - this.getAttInt(this.trackX, "left") - this.mouseDownXOffset;
+    this.maxXTravel =  (this.getAttInt(this.trackX, "width") - this.getAttInt(this.sliderX, "width"));
+
     if (this.xTravelled < 0) {
       // Handle scrolling left of the scrollbar
       this.xTravelled = 0;
       this.sliderX.style.left = "0px";
-      this.sliderX.style.width =
-        0.4 * this.getAttInt(this.trackX, "width") + "px";
       this.updateHorizontalScroll(0);
-    } else if (
-      this.xTravelled >
-      0.8 *
-        (this.getAttInt(this.trackX, "width") -
-          this.getAttInt(this.sliderX, "width"))
-    ) {
+    } else if ( this.xTravelled > 0.8 * this.maxXTravel) {
       // Handle scrolling beyond 80% of the scrollbar
       this.handleScrollBeyondRight();
     } else {
       // Update slider position and container shift
       this.sliderX.style.left = this.xTravelled + "px";
-      this.sliderPercentageX =
-        (this.xTravelled /
-          (this.getAttInt(this.trackX, "width") -
-            this.getAttInt(this.sliderX, "width"))) *
-        100;
+      this.sliderPercentageX = this.xTravelled / this.maxXTravel * 100;
       this.updateHorizontalScroll(this.sliderPercentageX);
     }
   }
-  
-  /**
-   * Handles the scenario when scrolling goes beyond 80% of the scrollbar.
-   * @returns {void}
-  */
- handleScrollBeyondRight() {
-    this.mainGrid.addColumns(10);
-    this.topGrid.addCells(10);
-
-    this.containerWidth =
-      this.dimension.cWidthPrefixSum[this.dimension.cWidthPrefixSum.length - 1];
-    this.sliderX.style.left =
-      0.5 *
-        (this.getAttInt(this.trackX, "width") -
-          this.getAttInt(this.sliderX, "width")) +
-      "px";
-    this.xTravelled =
-      0.5 *
-      (this.getAttInt(this.trackX, "width") -
-        this.getAttInt(this.sliderX, "width"));
-
-    if (this.getAttInt(this.sliderX, "width") > 40) {
-      this.sliderX.style.width =
-        (this.mainGrid.mainCanvas.width * this.mainGrid.mainCanvas.width) /
-          this.containerWidth +
-        "px";
-    }
-    this.isScrollX = false;
-  }
-
 
   /**
    * Updates the horizontal scroll position based on the given percentage.
@@ -325,20 +283,36 @@ export class Scroll {
    * @returns {void}
    */
   updateHorizontalScroll(percentage) {
-    this.dimension.shiftLeftX =
-      (percentage * (this.containerWidth - this.mainGrid.mainCanvas.width)) /
-      100;
-    this.dimension.shiftRightX =
-      this.dimension.shiftLeftX + this.mainGrid.mainCanvas.width;
-    this.dimension.leftIndex = this.dimension.cellXIndex(
-      this.dimension.shiftLeftX
-    );
-    this.dimension.rightIndex = this.dimension.cellXIndex(
-      this.dimension.shiftRightX
-    );
+    this.dimension.shiftLeftX = (percentage * (this.containerWidth - this.mainGrid.mainCanvas.width)) / 100;
+    this.dimension.shiftRightX = this.dimension.shiftLeftX + this.mainGrid.mainCanvas.width;
+
+    this.dimension.leftIndex = this.dimension.cellXIndex(this.dimension.shiftLeftX);
+    this.dimension.rightIndex = this.dimension.cellXIndex(this.dimension.shiftRightX);
+ 
+    console.log(this.xTravelled)
+
 
     this.mainGrid.render();
     this.topGrid.render();
+  }
+  
+  /**
+   * Handles the scenario when scrolling goes beyond 80% of the scrollbar.
+   * @returns {void}
+  */
+ handleScrollBeyondRight() {
+    this.mainGrid.addColumns(50);
+    this.topGrid.addCells(50);
+    this.containerWidth = this.dimension.cWidthPrefixSum[this.dimension.cWidthPrefixSum.length - 1];
+    
+    if (this.getAttInt(this.sliderX, "width") > 40) {
+      const newSliderXWidth = (this.mainGrid.mainCanvas.width * this.mainGrid.mainCanvas.width) / this.containerWidth;
+      this.sliderX.style.width = newSliderXWidth + "px";
+      this.maxXTravel = this.getAttInt(this.trackX, "width") - newSliderXWidth;
+    }
+
+    this.sliderX.style.left = (this.dimension.shiftLeftX / (this.containerWidth - this.mainGrid.mainCanvas.width)) * this.maxXTravel + "px";
+    this.isScrollX = false;
   }
 
   /**

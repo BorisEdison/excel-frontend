@@ -34,7 +34,7 @@ class Excel {
 
     init() {
         // Add the first sheet by default
-        this.sheets["sheet" + 1] = new Sheet(100, 60, 60, 20, "sheet" + 1)
+        this.sheets["sheet" + 1] = new Sheet(100, 50, 60, 20, "sheet" + 1)
         this.count++
     }
 
@@ -44,7 +44,7 @@ class Excel {
             this.count++  // Increment sheet counter
 
             // Create a new sheet and add it to the `sheets` object
-            this.sheets["sheet" + this.count] = new Sheet(100, 60, 60, 20, "sheet" + this.count)
+            this.sheets["sheet" + this.count] = new Sheet(100, 50, 60, 20, "sheet" + this.count)
             
             // Add a tab for the newly created sheet
             this.addSheetTab()
