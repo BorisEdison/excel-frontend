@@ -59,6 +59,7 @@ export class GridOperations {
   handleMouseDown(e) {
     this.isSelecting = true;
     this.isAnimated = false;
+    
     this.selectIndexX = this.dimension.cellXIndex(this.dimension.shiftLeftX + e.offsetX);
     this.selectIndexY = this.dimension.cellYIndex(this.dimension.shiftTopY + e.offsetY);
 

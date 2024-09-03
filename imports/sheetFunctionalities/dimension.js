@@ -1,4 +1,4 @@
-import { CellStruct } from "./cell";
+import { CellStruct } from "./cell.js";
 
 export class Dimension {
   /**

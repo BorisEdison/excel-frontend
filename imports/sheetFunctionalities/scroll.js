@@ -196,36 +196,63 @@ export class Scroll {
    * @returns {void}
    */
   handleVerticalScroll(e) {
-    this.yTravelled =
-      e.pageY - this.getAttInt(this.trackY, "top") - this.mouseDownYOffset;
+    this.yTravelled = e.pageY - this.getAttInt(this.trackY, "top") - this.mouseDownYOffset;
+    this.maxYTravel =this.getAttInt(this.trackY, "height") -this.getAttInt(this.sliderY, "height");
 
     if (this.yTravelled < 0) {
       // Handle scrolling above the top of the scrollbar
       this.yTravelled = 0;
       this.sliderY.style.top = "0px";
-      this.sliderY.style.height =
-        0.6 * this.getAttInt(this.trackY, "height") + "px";
       this.updateVerticalScroll(0);
-    } else if (
-      this.yTravelled >
-      0.8 *
-        (this.getAttInt(this.trackY, "height") -
-          this.getAttInt(this.sliderY, "height"))
-    ) {
+    } else if (this.yTravelled > 0.8 * this.maxYTravel) {
       // Handle scrolling beyond 80% of the scrollbar
       this.handleScrollBeyondBottom();
     } else {
       // Update slider position and container shift
       this.sliderY.style.top = this.yTravelled + "px";
-      this.sliderPercentageY =
-        (this.yTravelled /
-          (this.getAttInt(this.trackY, "height") -
-            this.getAttInt(this.sliderY, "height"))) *
-        100;
+      this.sliderPercentageY = (this.yTravelled / this.maxYTravel) * 100;
+      
       this.updateVerticalScroll(this.sliderPercentageY);
     }
   }
 
+  /**
+   * Updates the vertical scroll position based on the given percentage.
+   * @param {number} percentage - The percentage of the scrollbar's movement, used to calculate the new vertical scroll position.
+   * @returns {void}
+  */
+ updateVerticalScroll(percentage) {
+  this.dimension.shiftTopY = (percentage * (this.containerHeight - this.mainGrid.mainCanvas.height)) / 100;
+  this.dimension.shiftBottomY = this.dimension.shiftTopY + this.mainGrid.mainCanvas.height;
+
+  this.dimension.topIndex = this.dimension.cellYIndex(this.dimension.shiftTopY);
+  this.dimension.bottomIndex = this.dimension.cellYIndex(this.dimension.shiftBottomY);
+  
+  this.mainGrid.render();
+  this.sideGrid.render();
+ }
+  
+  /**
+   * Handles the scenario when scrolling goes beyond 80% of the scrollbar.
+   * @returns {void}
+  */
+ handleScrollBeyondBottom() {
+   this.mainGrid.addRows(100);
+   this.sideGrid.addCells(100);
+   this.fileOperations.getFile(this.dimension.rHeightPrefixSum.length - 21, this.dimension.rHeightPrefixSum.length - 1);
+   this.containerHeight = this.dimension.rHeightPrefixSum[this.dimension.rHeightPrefixSum.length - 1];
+   
+   if (this.getAttInt(this.sliderY, "height") > 40) {
+    const newSliderYHeight = (this.mainGrid.mainCanvas.height * this.mainGrid.mainCanvas.height) / this.containerHeight
+     this.sliderY.style.height = newSliderYHeight + "px";
+     this.maxYTravel =this.getAttInt(this.trackY, "height") - newSliderYHeight;
+   }    
+
+    this.sliderY.style.top = (this.dimension.shiftTopY/(this.containerHeight-this.mainGrid.mainCanvas.height)) * this.maxYTravel +"px";
+    this.isScrollY = false;
+}
+    
+  
   /**
    * Handles horizontal scrolling based on mouse movement.
    * @param {MouseEvent} e - The mouse event object.
@@ -234,7 +261,7 @@ export class Scroll {
   handleHorizontalScroll(e) {
     this.xTravelled =
       e.pageX - this.getAttInt(this.trackX, "left") - this.mouseDownXOffset;
-
+ 
     if (this.xTravelled < 0) {
       // Handle scrolling left of the scrollbar
       this.xTravelled = 0;
@@ -261,46 +288,12 @@ export class Scroll {
       this.updateHorizontalScroll(this.sliderPercentageX);
     }
   }
-
+  
   /**
    * Handles the scenario when scrolling goes beyond 80% of the scrollbar.
    * @returns {void}
-   */
-  handleScrollBeyondBottom() {
-    if (this.getAttInt(this.sliderY, "height") > 40) {
-      this.sliderY.style.height =
-        (this.mainGrid.mainCanvas.height * this.mainGrid.mainCanvas.height) /
-          this.containerHeight +
-        "px";
-    }
-    this.mainGrid.addRows(20);
-    this.fileOperations.getFile(
-      this.dimension.rHeightPrefixSum.length - 21,
-      this.dimension.rHeightPrefixSum.length - 1
-    );
-    this.sideGrid.addCells(20);
-
-    this.containerHeight =
-      this.dimension.rHeightPrefixSum[
-        this.dimension.rHeightPrefixSum.length - 1
-      ];
-    this.sliderY.style.top =
-      0.5 *
-        (this.getAttInt(this.trackY, "height") -
-          this.getAttInt(this.sliderY, "height")) +
-      "px";
-    this.yTravelled =
-      0.5 *
-      (this.getAttInt(this.trackY, "height") -
-        this.getAttInt(this.sliderY, "height"));
-    this.isScrollY = false;
-  }
-
-  /**
-   * Handles the scenario when scrolling goes beyond 80% of the scrollbar.
-   * @returns {void}
-   */
-  handleScrollBeyondRight() {
+  */
+ handleScrollBeyondRight() {
     this.mainGrid.addColumns(10);
     this.topGrid.addCells(10);
 
@@ -325,27 +318,6 @@ export class Scroll {
     this.isScrollX = false;
   }
 
-  /**
-   * Updates the vertical scroll position based on the given percentage.
-   * @param {number} percentage - The percentage of the scrollbar's movement, used to calculate the new vertical scroll position.
-   * @returns {void}
-   */
-  updateVerticalScroll(percentage) {
-    this.dimension.shiftTopY =
-      (percentage * (this.containerHeight - this.mainGrid.mainCanvas.height)) /
-      100;
-    this.dimension.shiftBottomY =
-      this.dimension.shiftTopY + this.mainGrid.mainCanvas.height;
-    this.dimension.topIndex = this.dimension.cellYIndex(
-      this.dimension.shiftTopY
-    );
-    this.dimension.bottomIndex = this.dimension.cellYIndex(
-      this.dimension.shiftBottomY
-    );
-
-    this.mainGrid.render();
-    this.sideGrid.render();
-  }
 
   /**
    * Updates the horizontal scroll position based on the given percentage.

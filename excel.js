@@ -18,7 +18,6 @@ class Excel {
          */
         this.sheets = {}
         
-  
         /**
          * @type { Number }
          */
