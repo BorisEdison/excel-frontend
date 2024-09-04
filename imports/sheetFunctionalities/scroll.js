@@ -237,8 +237,8 @@ export class Scroll {
    * @returns {void}
   */
  handleScrollBeyondBottom() {
-   this.mainGrid.addRows(100);
-   this.sideGrid.addCells(100);
+   this.mainGrid.addRows(500);
+   this.sideGrid.addCells(500);
    this.fileOperations.getFile(this.dimension.rHeightPrefixSum.length - 21, this.dimension.rHeightPrefixSum.length - 1);
    this.containerHeight = this.dimension.rHeightPrefixSum[this.dimension.rHeightPrefixSum.length - 1];
    
@@ -290,7 +290,6 @@ export class Scroll {
     this.dimension.rightIndex = this.dimension.cellXIndex(this.dimension.shiftRightX);
  
     console.log(this.xTravelled)
-
 
     this.mainGrid.render();
     this.topGrid.render();

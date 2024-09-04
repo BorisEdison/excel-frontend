@@ -1,5 +1,8 @@
 body {
   margin: 0px;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 /* navbar */
 #ribbon-container {
@@ -230,5 +233,6 @@ border: 2px solid #107C41;
     justify-content: center;
   }
   .sheet-close-btn:hover {
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+    background-color: rgb(236, 119, 119);
+    color:  white;
     }

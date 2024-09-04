@@ -100,7 +100,6 @@ export class Sheet {
   }
 
   handleResize() {
-    console.log("hello")
     this.scallingCanvas();
   }
 

@@ -46,7 +46,7 @@ export class FileOperations {
         alert('The file has been uploaded successfully.');
 
         // Fetch the updated file data and render the grid
-        await this.getFile(this.dimension.topIndex, 100);
+        await this.getFile(this.dimension.topIndex, 1000);
         this.mainGrid.render();
       }
     } catch (error) {

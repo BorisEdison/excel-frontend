@@ -18,6 +18,8 @@ class Excel {
          */
         this.sheets = {}
         
+        this.sheetTabBtns = {}
+        
         /**
          * @type { Number }
          */
@@ -34,7 +36,7 @@ class Excel {
 
     init() {
         // Add the first sheet by default
-        this.sheets["sheet" + 1] = new Sheet(100, 50, 60, 20, "sheet" + 1)
+        this.sheets["sheet" + 1] = new Sheet(1000, 50, 60, 20, "sheet" + 1)
         this.count++
     }
 
@@ -44,7 +46,7 @@ class Excel {
             this.count++  // Increment sheet counter
 
             // Create a new sheet and add it to the `sheets` object
-            this.sheets["sheet" + this.count] = new Sheet(100, 50, 60, 20, "sheet" + this.count)
+            this.sheets["sheet" + this.count] = new Sheet(1000, 50, 60, 20, "sheet" + this.count)
             
             // Add a tab for the newly created sheet
             this.addSheetTab()
@@ -77,20 +79,50 @@ class Excel {
         sheetTabBtnElement.appendChild(sheetLabelElement)
         sheetTabBtnElement.appendChild(sheetCloseBtnElement)
 
+        // Add the current sheet button to the 'sheetTabBtns' object
+        this.sheetTabBtns["sheet" + currentSheetNum] = sheetTabBtnElement
+
+        for (let btn in this.sheetTabBtns) {
+            this.sheetTabBtns[btn].style.backgroundColor = "#F5FAF7"
+        }
+        sheetTabBtnElement.style.backgroundColor = "#D5E0DA"
+
         // Append the newly created sheet tab to the list container in the DOM
         const sheetListContainerElement = document.querySelector(".sheet-list-container")
         sheetListContainerElement.appendChild(sheetTabBtnElement)
 
         // Add a click event listener to the sheet tab to display its content
-        sheetTabBtnElement.addEventListener("click", () => {
+        sheetLabelElement.addEventListener("click", () => {
             // Clear the current content of the excel element
             this.excelElement.textContent = ""
 
             // Get the current sheet object
-            var currentSpreadsheet = this.sheets["sheet" + currentSheetNum]
+            var currentSpreadsheet = this.sheets["sheet" + currentSheetNum] 
             
             // Append the spreadsheet element to the Excel element
             this.excelElement.appendChild(currentSpreadsheet.spreadsheetElement)
+
+            for (let btn in this.sheetTabBtns) {
+                this.sheetTabBtns[btn].style.backgroundColor = "#F5FAF7"
+            }
+
+            sheetTabBtnElement.style.backgroundColor = "#D5E0DA"
+        })
+
+        sheetCloseBtnElement.addEventListener("click", () => {
+            if ( Object.keys(this.sheets).length > 1 ) {
+                delete this.sheets["sheet" + currentSheetNum]
+
+                sheetListContainerElement.removeChild(this.sheetTabBtns["sheet" + currentSheetNum])
+                delete this.sheetTabBtns["sheet" + currentSheetNum]
+
+                const previousSheet = this.sheets[Object.keys(this.sheets)[Object.keys(this.sheets).length - 1]]
+                const previousSheetTabBtn = this.sheetTabBtns[Object.keys(this.sheetTabBtns)[Object.keys(this.sheetTabBtns).length - 1]]
+                this.excelElement.appendChild(previousSheet.spreadsheetElement)
+                previousSheetTabBtn.style.backgroundColor = "#D5E0DA"
+            } else {
+                alert("sorry :( you cant remove the last sheet")
+            }
         })
     }
 }
