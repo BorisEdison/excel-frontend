@@ -45,8 +45,11 @@ export class FileOperations {
       } else {
         alert('The file has been uploaded successfully.');
 
+        const offset = 0
+        const limit = 1000
+
         // Fetch the updated file data and render the grid
-        await this.getFile(this.dimension.topIndex, 1000);
+        await this.getFile(offset, limit);
         this.mainGrid.render();
       }
     } catch (error) {
@@ -80,8 +83,9 @@ export class FileOperations {
 
       // Ensure we don't go out of bounds
       for (let i = 0; i < Math.min(limit, values.length); i++) {
-        for (let j = 0; j < values[0].length; j++) {
-          this.mainGrid.mainCells[i][j].value = values[i][j];
+        // skipping the id column
+        for (let j = 1; j < values[0].length; j++) {
+          this.mainGrid.mainCells[i][j-1].value = values[i][j];   // subjectracting j with 1 to skip id column
         }
       }
     } catch (error) {
