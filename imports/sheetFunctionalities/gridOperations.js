@@ -1,11 +1,13 @@
 export class GridOperations {
-  constructor(dimension, mainGrid, sideGrid, topGrid) {
+  constructor(dimension, mainGrid, sideGrid, topGrid, fileOperations, ) {
     this.dimension = dimension;
     this.mainGrid = mainGrid;
     this.sideGrid = sideGrid;
     this.topGrid = topGrid;
+    this.fileOperations = fileOperations;
 
     this.cellInput = document.querySelector(".input-box");
+    this.findReplaceBtn = document.querySelector(".find-replace-btn")
 
     // Initial state for selection
     this.selectIndexX = null;
@@ -59,6 +61,33 @@ export class GridOperations {
     // document.addEventListener("keydown", (e) => {
     //   this.handleMarchingAnt(e);
     // });
+    this.findReplaceBtn.addEventListener(
+      "click",
+      this.findAndReplace.bind(this)
+    )
+  }
+
+  async findAndReplace() {
+    const findText = prompt("Enter the value you want to change");
+    const replaceText = findText && prompt("Enter the updated value");
+  
+    // If both values are valid
+    if (findText && replaceText) {
+      
+      await this.fileOperations.findAndReplace(findText,replaceText)
+
+      for(let i = 0; i < this.mainGrid.mainCells.length ; i++){
+        for(let j = 0; j < this.mainGrid.mainCells[0].length; j++){
+          if(this.mainGrid.mainCells[i][j].value == findText){
+            console.log("hello")
+            this.mainGrid.mainCells[i][j].value = replaceText
+          }
+        }
+      }
+      
+      this.mainGrid.render()
+
+    }
   }
 
   // Handle mouse down event
@@ -138,46 +167,14 @@ export class GridOperations {
 
   // Update the cell value and redraw it
   async updateText(cell, value, prevSelectIndexY) {
-    cell.value = value;
-    console.log(prevSelectIndexY);
-    cell.drawCell();
-
-    try {
-      const dataModel = {
-        id : prevSelectIndexY + 1, // id start from 1
-        email_id: this.mainGrid.mainCells[prevSelectIndexY][0].value,
-        name: this.mainGrid.mainCells[prevSelectIndexY][1].value,
-        country: this.mainGrid.mainCells[prevSelectIndexY][2].value,
-        state: this.mainGrid.mainCells[prevSelectIndexY][3].value,
-        city: this.mainGrid.mainCells[prevSelectIndexY][4].value,
-        telephone_number: this.mainGrid.mainCells[prevSelectIndexY][5].value,
-        address_line_1: this.mainGrid.mainCells[prevSelectIndexY][6].value,
-        address_line_2: this.mainGrid.mainCells[prevSelectIndexY][7].value,
-        date_of_birth: this.mainGrid.mainCells[prevSelectIndexY][8].value,
-        gross_salary_FY2019_20:
-          this.mainGrid.mainCells[prevSelectIndexY][9].value,
-        gross_salary_FY2020_21:
-          this.mainGrid.mainCells[prevSelectIndexY][10].value,
-        gross_salary_FY2021_22:
-          this.mainGrid.mainCells[prevSelectIndexY][11].value,
-        gross_salary_FY2022_23:
-          this.mainGrid.mainCells[prevSelectIndexY][12].value,
-        gross_salary_FY2023_24:
-          this.mainGrid.mainCells[prevSelectIndexY][13].value,
-      };
-      let response = await fetch(
-        "https://localhost:7220/ExcelApi/UpdateRecord",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(dataModel),
-        }
-      );
-    } catch (error) {
-      console.error("error in updating the cell", error);
+    // return if value is not changed
+    if(cell.value == value) {
+      return ;
     }
+
+    cell.value = value;
+    cell.drawCell();
+    await this.fileOperations.updateCell(prevSelectIndexY);
   }
 
   // Handle mouse move event

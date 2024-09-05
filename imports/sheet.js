@@ -66,7 +66,8 @@ export class Sheet {
       this.dimension,
       this.mainGrid,
       this.sideGrid,
-      this.topGrid
+      this.topGrid,
+      this.fileOperations
     );
     /**
      * @type { Scroll }
