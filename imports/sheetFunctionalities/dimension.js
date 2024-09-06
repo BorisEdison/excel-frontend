@@ -69,19 +69,19 @@ export class Dimension {
     /**
      * @type { number }
      */
-    this.shiftTop = 0; // Top shift for vertical scrolling
+    this.shiftTopY = 0; // Top shift for vertical scrolling
     /**
      * @type { number }
      */
-    this.shiftBottom; // Bottom shift (calculated later)
+    this.shiftBottomY; // Bottom shift (calculated later)
     /**
      * @type { number }
      */
-    this.shiftLeft = 0; // Left shift for horizontal scrolling
+    this.shiftLeftX = 0; // Left shift for horizontal scrolling
     /**
      * @type { number }
      */
-    this.shiftRight; // Right shift (calculated later)
+    this.shiftRightX; // Right shift (calculated later)
 
     // Index properties to keep track of visible cells
     /**

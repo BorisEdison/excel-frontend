@@ -1,5 +1,5 @@
 import { Dimension } from "./dimension.js";
-import { MainGrid  } from "./mainGrid.js";
+import { MainGrid } from "./mainGrid.js";
 export class FileOperations {
   /**
    * Initializes the FileOperations class.
@@ -9,7 +9,23 @@ export class FileOperations {
   constructor(dimension, mainGrid) {
     this.dimension = dimension;
     this.mainGrid = mainGrid;
-    this.init();  // Set up event listeners
+
+    this.connection = new signalR.HubConnectionBuilder()
+      .withUrl("https://localhost:7220/progressHub", {
+        withCredentials: true,
+      })
+      .build();
+
+    this.connection.on("ReceiveUpdate", function (message) {
+      console.log("Update from server: " + message);
+      // Update your UI with the received message
+    });
+
+    this.connection.start().catch(function (err) {
+      return console.error(err.toString());
+    });
+
+    this.init(); // Set up event listeners
   }
 
   /**
@@ -17,11 +33,13 @@ export class FileOperations {
    */
   init() {
     // Attach change event listener to file upload button
-    document.querySelector('.file-upload-btn').addEventListener('change', (e) => {
-      if (e.target.files[0]) {
-        this.uploadFile(e.target.files[0]);  // Handle file upload
-      }
-    });
+    document
+      .querySelector(".file-upload-btn")
+      .addEventListener("change", (e) => {
+        if (e.target.files[0]) {
+          this.uploadFile(e.target.files[0]); // Handle file upload
+        }
+      });
   }
 
   /**
@@ -30,31 +48,34 @@ export class FileOperations {
    */
   async uploadFile(file) {
     const formData = new FormData();
-    formData.append("csvFile", file);  // Append file to form data
+    formData.append("csvFile", file); // Append file to form data
 
     try {
-      const response = await fetch('https://localhost:7220/ExcelApi/uploadCsv', {
-        method: "POST",
-        body: formData
-      });
+      const response = await fetch(
+        "https://localhost:7220/ExcelApi/uploadCsv",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('Server responded with an error:', errorText);
-        alert('Failed to upload the file');
+        console.error("Server responded with an error:", errorText);
+        alert("Failed to upload the file");
       } else {
-        alert('The file has been uploaded successfully.');
+        alert("The file has been uploaded successfully.");
 
-        const offset = 0
-        const limit = 1000
+        const offset = 0;
+        const limit = this.mainGrid.mainCells.length;
 
         // Fetch the updated file data and render the grid
         await this.getFile(offset, limit);
         this.mainGrid.render();
       }
     } catch (error) {
-      console.error('Could not connect to server:', error);
-      alert('Could not connect to server');
+      console.error("Could not connect to server:", error);
+      alert("Could not connect to server");
     }
   }
 
@@ -66,47 +87,47 @@ export class FileOperations {
    */
   async getFile(offset, limit) {
     const range = {
-      "limit": limit,
-      "offset": offset
+      limit: limit,
+      offset: offset,
     };
 
     try {
-      const response = await fetch('https://localhost:7220/ExcelApi/getCsv', {
+      const response = await fetch("https://localhost:7220/ExcelApi/getCsv", {
         method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(range),
       });
 
       const res = await response.json();
-      const values = res.map(item => Object.values(item));  // Convert response to array of values
+      const values = res.map((item) => Object.values(item)); // Convert response to array of values
 
       // Ensure we don't go out of bounds
       for (let i = 0; i < Math.min(limit, values.length); i++) {
         // skipping the id column
         for (let j = 1; j < values[0].length; j++) {
-          this.mainGrid.mainCells[i][j-1].value = values[i][j];   // subjectracting j with 1 to skip id column
+          this.mainGrid.mainCells[i][j - 1].value = values[i][j]; // subjectracting j with 1 to skip id column
         }
       }
     } catch (error) {
-      console.error('Could not get items:', error);
+      console.error("Could not get items:", error);
     }
   }
 
   /**
    * Updates a specific cell in the grid and sends the updated data to the server.
-   * 
+   *
    * @async
    * @param {number} index - The index of the row to update.
    * @returns {Promise<void>} - A promise that resolves when the update is complete.
    * @throws Will throw an error if the fetch request fails.
- */
+   */
   async updateCell(index) {
     try {
-    // Prepare the data model from the grid, with id starting from 1
-    const dataModel = {
-      id: index + 1, // The id starts from 1, so add 1 to the index
+      // Prepare the data model from the grid, with id starting from 1
+      const dataModel = {
+        id: index + 1, // The id starts from 1, so add 1 to the index
         email_id: this.mainGrid.mainCells[index][0].value,
         name: this.mainGrid.mainCells[index][1].value,
         country: this.mainGrid.mainCells[index][2].value,
@@ -116,16 +137,11 @@ export class FileOperations {
         address_line_1: this.mainGrid.mainCells[index][6].value,
         address_line_2: this.mainGrid.mainCells[index][7].value,
         date_of_birth: this.mainGrid.mainCells[index][8].value,
-        gross_salary_FY2019_20:
-          this.mainGrid.mainCells[index][9].value,
-        gross_salary_FY2020_21:
-          this.mainGrid.mainCells[index][10].value,
-        gross_salary_FY2021_22:
-          this.mainGrid.mainCells[index][11].value,
-        gross_salary_FY2022_23:
-          this.mainGrid.mainCells[index][12].value,
-        gross_salary_FY2023_24:
-          this.mainGrid.mainCells[index][13].value,
+        gross_salary_FY2019_20: this.mainGrid.mainCells[index][9].value,
+        gross_salary_FY2020_21: this.mainGrid.mainCells[index][10].value,
+        gross_salary_FY2021_22: this.mainGrid.mainCells[index][11].value,
+        gross_salary_FY2022_23: this.mainGrid.mainCells[index][12].value,
+        gross_salary_FY2023_24: this.mainGrid.mainCells[index][13].value,
       };
       // Send a POST request to update the record in the server
       let response = await fetch(
@@ -149,24 +165,26 @@ export class FileOperations {
     }
   }
 
-  async findAndReplace(findText, replaceText){
+  async findAndReplace(findText, replaceText) {
     const params = {
-      "FindText": findText,
-      "ReplaceText": replaceText
+      FindText: findText,
+      ReplaceText: replaceText,
     };
 
     try {
-      const response = await fetch('https://localhost:7220/ExcelApi/findAndReplace', {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(params),
-      });
-      console.log("reponse received")
-
+      const response = await fetch(
+        "https://localhost:7220/ExcelApi/findAndReplace",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(params),
+        }
+      );
+      console.log("reponse received");
     } catch (error) {
-      console.error('Could not get items:', error);
+      console.error("Could not get items:", error);
     }
-    }
+  }
 }
