@@ -71,6 +71,11 @@ body {
 .focus-zone-right {
   color: white;
 }
+.focus-zone-inner-btn {
+  background-color: #D5E0DA;
+  border-radius: 5px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
 .file-upload-btn {
   color: white;
 }
@@ -205,6 +210,7 @@ border: 2px solid #107C41;
   display: flex;
   align-items: end;
   flex-direction: column;
+  overflow-x: auto;
   }
   .sheet-list-container{
     height: inherit;

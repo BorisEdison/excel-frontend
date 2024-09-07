@@ -9,6 +9,9 @@
     <!-- stylesheet -->
     <link rel="stylesheet" href="./styles.css">
     
+    <!-- iconify -->
+    <script src="https://code.iconify.design/2/2.1.2/iconify.min.js"></script>
+
     <!-- signalR -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.11/signalr.min.js"></script>
 
@@ -38,12 +41,24 @@
                 <input class="file-upload-btn" type="file">
               </div>
               <div class="focus-operations d-none">
-                <button class="find-replace-btn">find and replace</button>
+                <button class="find-replace-btn focus-zone-inner-btn">
+                  <span class="iconify" data-icon="ic:round-find-replace" data-width="23" data-height="23"></span>
+                  find and replace
+                </button>
               </div>
               <div class="focus-graph d-none">
-                <button class="graph-bar-btn">bar</button>
-                <button class="graph-line-btn">line</button>
-                <button class="graph-pie-btn">chart</button>
+                <button class="graph-bar-btn focus-zone-inner-btn">
+                  <span class="iconify" data-icon="mingcute:chart-bar-fill" data-width="23" data-height="23"></span>
+                  bar
+                </button>
+                <button class="graph-line-btn focus-zone-inner-btn">
+                  <span class="iconify" data-icon="entypo:line-graph" data-width="23" data-height="23"></span>
+                  line
+                </button>
+                <button class="graph-pie-btn focus-zone-inner-btn">
+                  <span class="iconify" data-icon="bxs:doughnut-chart" data-width="23" data-height="23"></span>
+                  Pie
+                </button>
               </div>
             </div>
   
@@ -65,7 +80,9 @@
 
       <!-- graph -->
       <div class="graph">
-        <button class="graph-close btn btn-sm btn-danger">X</button>
+        <button class="graph-close btn btn-sm btn-danger">
+          <span class="iconify" data-icon="maki:cross" data-width="23" data-height="23"></span>
+        </button>
         <canvas id="myChart"></canvas>
       </div>
 

@@ -68,11 +68,12 @@ class Excel {
 
         // Create a button element to allow closing the sheet
         const sheetCloseBtnElement = document.createElement("button")
-        sheetCloseBtnElement.classList.add("sheet-close-btn", "sheet-close-" + currentSheetNum)
+        sheetCloseBtnElement.classList.add("sheet-close-btn", "sheet-close-" + currentSheetNum, "d-flex", "justify-content-center", "align-items-center")
 
         // Add a "X" text to the close button
         const sheetCloseBtnTextElement = document.createElement("span")
-        sheetCloseBtnTextElement.innerText = "X"
+        sheetCloseBtnTextElement.innerHTML = '<span class="iconify" data-icon="maki:cross" data-width="16" data-height="17"></span>'
+
         sheetCloseBtnElement.appendChild(sheetCloseBtnTextElement)
 
         // Append the label and close button to the sheet tab element
