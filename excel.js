@@ -118,6 +118,8 @@ class Excel {
 
                 const previousSheet = this.sheets[Object.keys(this.sheets)[Object.keys(this.sheets).length - 1]]
                 const previousSheetTabBtn = this.sheetTabBtns[Object.keys(this.sheetTabBtns)[Object.keys(this.sheetTabBtns).length - 1]]
+
+                this.excelElement.textContent = ""
                 this.excelElement.appendChild(previousSheet.spreadsheetElement)
                 previousSheetTabBtn.style.backgroundColor = "#D5E0DA"
             } else {
