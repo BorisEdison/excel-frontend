@@ -228,7 +228,6 @@ export class Scroll {
   this.dimension.topIndex = this.dimension.cellYIndex(this.dimension.shiftTopY);
   this.dimension.bottomIndex = this.dimension.cellYIndex(this.dimension.shiftBottomY);
   
-  console.log(this.dimension.topIndex)
   this.mainGrid.render();
   this.sideGrid.render();
  }
@@ -290,8 +289,6 @@ export class Scroll {
     this.dimension.leftIndex = this.dimension.cellXIndex(this.dimension.shiftLeftX);
     this.dimension.rightIndex = this.dimension.cellXIndex(this.dimension.shiftRightX);
  
-    console.log(this.xTravelled)
-
     this.mainGrid.render();
     this.topGrid.render();
   }
