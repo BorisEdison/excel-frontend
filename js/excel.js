@@ -1,4 +1,4 @@
-import { Sheet } from './imports/sheet.js'
+import { Sheet } from './sheet/sheet.js'
 
 class Excel {
     constructor() {

@@ -257,7 +257,7 @@ export class Scroll {
    this.containerHeight = this.dimension.rHeightPrefixSum[this.dimension.rHeightPrefixSum.length - 1];
    
    if (this.getAttInt(this.sliderY, "height") > 40) {
-     const newSliderYHeight = this.getAttInt(this.sliderY, "height") * 0.8
+     const newSliderYHeight = this.getAttInt(this.sliderY, "height") * 0.8;
      this.sliderY.style.height = newSliderYHeight + "px";
      this.maxYTravel =this.getAttInt(this.trackY, "height") - newSliderYHeight;
    }    
