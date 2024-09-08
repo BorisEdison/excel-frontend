@@ -134,20 +134,34 @@ export class Scroll {
   }
 
   eventListeners() {
-    // Bind mouse events for vertical scrolling
+    // Bind mouse and touch events for vertical scrolling
     this.sliderY.addEventListener(
       "mousedown",
       this.handleMouseDownY.bind(this)
     );
-    // Bind mouse events for horizontal scrolling
+    this.sliderY.addEventListener(
+      "touchstart",
+      this.handleMouseDownY.bind(this)
+    );
+
+    // Bind mouse and touch events for horizontal scrolling
     this.sliderX.addEventListener(
       "mousedown",
+      this.handleMouseDownX.bind(this)  
+    );
+    this.sliderX.addEventListener(
+      "touchstart",
       this.handleMouseDownX.bind(this)
     );
-    // Bind global mouse events
+
+    // Bind global mouse and touch events
     document.addEventListener("mouseup", this.handleMouseUp.bind(this));
+    document.addEventListener("touchend", this.handleMouseUp.bind(this));
+
     document.addEventListener("mousemove", this.handleMouseMove.bind(this));
-  }
+    document.addEventListener("touchmove", this.handleMouseMove.bind(this));
+}
+
 
   /**
    * Handles the mouse down event for starting vertical scrolling.
@@ -249,7 +263,7 @@ export class Scroll {
    }    
 
     this.sliderY.style.top = (this.dimension.shiftTopY/(this.containerHeight-this.mainGrid.mainCanvas.height)) * this.maxYTravel +"px";
-    this.isScrollY = false;
+    // this.isScrollY = false;
 }
     
   /**

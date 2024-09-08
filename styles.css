@@ -248,7 +248,6 @@ border: 2px solid #107C41;
   }
   .sheet-list-container > .active {
     border-bottom: 3px solid #217346;
-    background-color: #D5E0DA;
     font-weight: bold;
   }
   .sheet-tab-btn:hover {
