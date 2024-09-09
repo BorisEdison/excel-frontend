@@ -114,7 +114,7 @@ export class Resize {
   updateResizeIndex(event) {
     // Calculate the horizontal distance from the left of the grid
     const distance =
-      event.clientX - this.topGrid.rect.left + this.dimension.shiftLeft;
+      event.clientX - this.topGrid.rect.left + this.dimension.shiftLeftX;
     this.ind = this.findResizeIndex(distance);
   }
 
@@ -159,12 +159,7 @@ export class Resize {
   adjustColumnWidth(index, extra) {
     for (let i = index; i < this.dimension.cWidthPrefixSum.length; i++) {
       // Check if the new width is less than the minimum width (30 pixels)
-      if (
-        this.dimension.cWidthPrefixSum[i] -
-          this.dimension.cWidthPrefixSum[i - 1] +
-          extra <
-        30
-      ) {
+      if (this.dimension.cWidthPrefixSum[i] - this.dimension.cWidthPrefixSum[i - 1] + extra < 30) {
         break; // Stop adjusting if the minimum width constraint is violated
       }
       this.dimension.cWidthPrefixSum[i] += extra; // Adjust the width

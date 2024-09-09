@@ -225,7 +225,6 @@ export class Scroll {
       // Update slider position and container shift
       this.sliderY.style.top = this.yTravelled + "px";
       this.sliderPercentageY = (this.yTravelled / this.maxYTravel) * 100;
-      
       this.updateVerticalScroll(this.sliderPercentageY);
     }
   }
@@ -244,6 +243,7 @@ export class Scroll {
   
   this.mainGrid.render();
   this.sideGrid.render();
+  this.gridOperations.inputBox();
  }
   
   /**
@@ -305,6 +305,7 @@ export class Scroll {
  
     this.mainGrid.render();
     this.topGrid.render();
+    this.gridOperations.inputBox();
   }
   
   /**

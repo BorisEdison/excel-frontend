@@ -99,15 +99,16 @@ export class Graph {
           borderWidth: 1,
         };
 
+        
         for (let j = 0; j < this.dimension.selectedTop.length; j++) {
           xValues[j] = this.dimension.selectedTop[j].value;
           dataSet.data.push(
-            this.mainGrid.mainCells[this.dimension.sideValues[i]][
+            this.mainGrid.mainCells[this.dimension.sideValues[i] - 1][
               this.dimension.getColumnNumber(this.dimension.topValues[j]) - 1
             ].value
           );
         }
-
+        
         dataSets.push(dataSet);
       }
     } else {
@@ -118,11 +119,11 @@ export class Graph {
           data: [],
           borderWidth: 1,
         };
-
+        
         for (let j = 0; j < this.dimension.selectedSide.length; j++) {
           xValues[j] = this.dimension.selectedSide[j].value;
           dataSet.data.push(
-            this.mainGrid.mainCells[this.dimension.sideValues[j]][
+            this.mainGrid.mainCells[this.dimension.sideValues[j] - 1][
               this.dimension.getColumnNumber(this.dimension.topValues[i]) - 1
             ].value
           );

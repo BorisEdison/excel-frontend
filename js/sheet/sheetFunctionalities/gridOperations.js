@@ -77,10 +77,13 @@ export class GridOperations {
     this.handleMouseUp.bind(this)
   );
 
-    // Uncomment if you want to enable marching ants animation
-    // document.addEventListener("keydown", (e) => {
-    //   this.handleMarchingAnt(e);
-    // });
+    // enable marching ants animation
+    document.addEventListener("keydown", (e) => {
+      if (e.ctrlKey && e.key.toLowerCase() === 'c') {
+        this.handleMarchingAnt(e);
+      }
+    });
+
     this.findReplaceBtn.addEventListener(
       "click",
       this.findAndReplace.bind(this)
@@ -112,6 +115,7 @@ export class GridOperations {
 
   // Handle mouse down event
   handleMouseDown(e) {
+    window.cancelAnimationFrame(this.rafId);
     this.isSelecting = true;
     this.isAnimated = false;
 
@@ -177,9 +181,9 @@ export class GridOperations {
     this.cellInput.value = this.selectedCell.value;
     this.cellInput.style.display = "block";
     this.cellInput.style.top =
-      this.selectedCell.yVal + this.mainGrid.mainCanvas.offsetTop + "px";
+      this.dimension.rHeightPrefixSum[this.selectIndexY] - this.dimension.shiftTopY + this.mainGrid.mainCanvas.offsetTop + "px";
     this.cellInput.style.left =
-      this.selectedCell.xVal + this.mainGrid.mainCanvas.offsetLeft + "px";
+      this.dimension.cWidthPrefixSum[this.selectIndexX] - this.dimension.shiftLeftX + this.mainGrid.mainCanvas.offsetLeft + "px";
     this.cellInput.style.height = this.selectedCell.height + "px";
     this.cellInput.style.width = this.selectedCell.width + "px";
     this.isInput = true;
@@ -259,35 +263,44 @@ export class GridOperations {
         }
       }
 
-      // Update the bounding box for the selection
-      this.xValStart = this.dimension.selectedMain[0].xVal;
-      this.yValStart = this.dimension.selectedMain[0].yVal;
-      this.xValEnd =
-        this.dimension.selectedMain[this.dimension.selectedMain.length - 1]
-          .xVal +
-        this.dimension.selectedMain[this.dimension.selectedMain.length - 1]
-          .width;
-      this.yValEnd =
-        this.dimension.selectedMain[this.dimension.selectedMain.length - 1]
-          .yVal +
-        this.dimension.selectedMain[this.dimension.selectedMain.length - 1]
-          .height;
-
       this.getValues(this.dimension.topValues, this.dimension.selectedTop);
       this.getValues(this.dimension.mainValues, this.dimension.selectedMain);
       this.getValues(this.dimension.sideValues, this.dimension.selectedSide);
-
-      // Draw border around the selection
-      this.mainGrid.mainCtx.strokeStyle = "rgba(0, 128, 0, 0.8)";
-      this.mainGrid.mainCtx.strokeRect(
-        this.xValStart,
-        this.yValStart,
-        this.xValEnd - this.xValStart,
-        this.yValEnd - this.yValStart
-      );
+      
+      this.selectionBoundary() 
     }
 
     // Calculate and display statistics
+    this.displayStatistics()
+  }
+
+  selectionBoundary() {
+    // Update the bounding box for the selection
+    this.xValStart = this.dimension.selectedMain[0].xVal;
+    this.yValStart = this.dimension.selectedMain[0].yVal;
+    this.xValEnd =
+      this.dimension.selectedMain[this.dimension.selectedMain.length - 1]
+        .xVal +
+      this.dimension.selectedMain[this.dimension.selectedMain.length - 1]
+        .width;
+    this.yValEnd =
+      this.dimension.selectedMain[this.dimension.selectedMain.length - 1]
+        .yVal +
+      this.dimension.selectedMain[this.dimension.selectedMain.length - 1]
+        .height;
+
+
+    // Draw border around the selection
+    this.mainGrid.mainCtx.strokeStyle = "rgba(0, 128, 0, 0.8)";
+    this.mainGrid.mainCtx.strokeRect(
+      this.xValStart,
+      this.yValStart,
+      this.xValEnd - this.xValStart,
+      this.yValEnd - this.yValStart
+    );
+  }
+
+  displayStatistics() {
     this.count = 0;
     this.sum = 0;
     if (this.dimension.selectedMain.length > 0) {
@@ -323,7 +336,6 @@ export class GridOperations {
       }
     }
   }
-
   // Handle mouse up event
   handleMouseUp() {
     this.isSelecting = false;
@@ -352,37 +364,38 @@ export class GridOperations {
   }
 
   // marching ant
-  //   handleMarchingAnt(e) {
-  //     if (e.key === "Control" && this.dimension.selectedMain.length > 1) {
-  //       this.isAnimated = true;
-  //         window.cancelAnimationFrame(this.rafId);
-  //       this.march();
-  //     }
-  //   }
+    handleMarchingAnt() {
+      if (this.dimension.selectedMain.length > 1) {
+        this.isAnimated = true;
+          window.cancelAnimationFrame(this.rafId);
+        this.march();
+      }
+    }
 
-  //   march() {
-  //     this.dashOffset++;
-  //     if (this.dashOffset > 20) {
-  //       this.dashOffset = 0;
-  //     }
-  //     this.drawDottedRect();
-  //     this.rafId = window.requestAnimationFrame(() => {
-  //       this.mainGrid.render();
-  //       this.march();
-  //     });
-  //   }
+    march() {
+      this.dashOffset += 2;
+      if (this.dashOffset > 16) {
+        this.dashOffset = 0;
+      }
+      this.drawDottedRect();
+      this.rafId = window.requestAnimationFrame(() => {
+        this.mainGrid.render();
+        this.march();
+      });
+    }
 
-  // drawDottedRect() {
-  //   this.mainGrid.mainCtx.setLineDash([5, 5]);
-  //   this.mainGrid.mainCtx.lineDashOffset = - this.dashOffset;
-  //   this.mainGrid.mainCtx.strokeStyle = "rgba(0, 128, 0, 0.9)";
-  //   this.mainGrid.mainCtx.lineWidth = 2;
-  //   this.mainGrid.mainCtx.strokeRect(
-  //     this.xValStart,
-  //     this.yValStart,
-  //     this.xValEnd - this.xValStart,
-  //     this.yValEnd - this.yValStart
-  //   );
-  //   this.mainGrid.mainCtx.setLineDash([]);
-  // }
+  drawDottedRect() {
+    this.mainGrid.mainCtx.setLineDash([5, 5]);
+    this.mainGrid.mainCtx.lineDashOffset = - this.dashOffset;
+    this.mainGrid.mainCtx.strokeStyle = "rgba(0, 128, 0, 0.9)";
+    this.mainGrid.mainCtx.lineWidth = 3;
+    this.mainGrid.mainCtx.strokeRect(
+      this.xValStart,
+      this.yValStart,
+      this.xValEnd - this.xValStart,
+      this.yValEnd - this.yValStart
+    );
+    this.mainGrid.mainCtx.setLineDash([]);
+    this.mainGrid.mainCtx.lineWidth = 1;
+  }
 }

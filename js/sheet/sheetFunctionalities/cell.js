@@ -53,23 +53,33 @@ export class CellStruct {
   drawCell() {
     // Clear the area of the current cell
     this.ctx.clearRect(this.xVal, this.yVal, this.width, this.height);
-
+  
     // Set the stroke style and draw the cell border
     this.ctx.strokeStyle = "#E0E0E0";
     this.ctx.strokeRect(this.xVal, this.yVal, this.width, this.height);
-
+  
+    // Save the current canvas state
+    this.ctx.save();
+  
+    // Clip the drawing area to the cell's boundaries
+    this.ctx.beginPath();
+    this.ctx.rect(this.xVal, this.yVal, this.width, this.height);
+    this.ctx.clip();
+  
     // Set the font style and fill color for the cell value
     this.ctx.font = "14px serif";
     this.ctx.fillStyle = "#000"; // Text color
-
+  
     // Draw the text in the center of the cell
     this.ctx.fillText(
       this.value,
       this.xVal + 12, // Adjust X position to add padding
       this.yVal + this.height / 1.2, // Center text vertically
-      this.width // Maximum width for the text
     );
-
+  
+    // Restore the canvas state to undo the clipping
+    this.ctx.restore();
+  
     // If the cell is selected, draw the selection highlight
     if (this.isSelected) {
       this.selectCell();

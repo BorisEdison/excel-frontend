@@ -108,6 +108,10 @@ export class Sheet {
     // tells the browser how many of the screen's actual pixels should be used to draw a single CSS pixel
     this.dimension.scale = window.devicePixelRatio; // Change to 1 on retina screens to see blurry canvas.
 
+    this.cornerCanvasElement = document.querySelector(".corner-canvas")
+    this.cornerCanvasElement.width = Math.floor(this.cornerCanvasElement.clientWidth * this.dimension.scale)
+    this.cornerCanvasElement.height = Math.floor(this.cornerCanvasElement.clientHeight * this.dimension.scale)
+
     //scalling top canvas
     this.topGrid.setCanvasDimension()
 
@@ -127,6 +131,7 @@ export class Sheet {
     const cornerCanvasElement = document.createElement("canvas");
     cornerCanvasElement.setAttribute("width", "60");
     cornerCanvasElement.setAttribute("height", "20");
+    cornerCanvasElement.setAttribute("class", "corner-canvas");
 
     // Create the top canvas element for the top grid (headers)
     const topCanvasElement = document.createElement("canvas");

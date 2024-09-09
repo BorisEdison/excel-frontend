@@ -107,7 +107,6 @@ class Excel {
             for (let btn in this.sheetTabBtns) {
                 this.sheetTabBtns[btn].classList.remove("active")
             }
-
             sheetTabBtnElement.classList.add("active");
         })
 
