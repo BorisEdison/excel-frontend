@@ -10,22 +10,8 @@ export class FileOperations {
     this.dimension = dimension;
     this.mainGrid = mainGrid;
 
-    this.connection = new signalR.HubConnectionBuilder()
-      .withUrl("https://localhost:7220/progressHub", {
-        withCredentials: true,
-      })
-      .build();
-
-    this.connection.on("ReceiveUpdate", function (message) {
-      console.log("Update from server: " + message);
-      // Update your UI with the received message
-    });
-
-    this.connection.start().catch(function (err) {
-      return console.error(err.toString());
-    });
-
     this.init(); // Set up event listeners
+    this.signalR()
   }
 
   /**
@@ -40,6 +26,40 @@ export class FileOperations {
           this.uploadFile(e.target.files[0]); // Handle file upload
         }
       });
+  }
+
+  signalR() {    
+    let progressDivElement = document.querySelector(".progress")
+    let progressBarElement = document.querySelector(".progress-bar")
+
+    this.connection = new signalR.HubConnectionBuilder()
+    .withUrl("https://localhost:7220/progressHub", {
+      withCredentials: true,
+    })
+    .build();
+    
+    this.connection.on("ReceiveUpdate", function (message) {
+      progressDivElement.style.display = "block"
+
+      message = parseInt(message)
+
+      console.log(message)
+
+      progressBarElement.style.width = message + "%";
+      progressBarElement.innerText = message + "%"; 
+
+      if(message == 100){
+        setTimeout(() => {
+          progressDivElement.style.display = "none";
+            progressBarElement.style.width = 0 + "%";
+            progressBarElement.innerText = 0 + "%"
+        }, 2000);
+      }
+    });
+
+    this.connection.start().catch(function (err) {
+      return console.error(err.toString());
+    });
   }
 
   /**
@@ -64,7 +84,6 @@ export class FileOperations {
         console.error("Server responded with an error:", errorText);
         alert("Failed to upload the file");
       } else {
-        alert("The file has been uploaded successfully.");
 
         const offset = 0;
         const limit = this.mainGrid.mainCells.length;
