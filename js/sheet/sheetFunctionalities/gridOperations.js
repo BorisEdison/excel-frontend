@@ -48,15 +48,35 @@ export class GridOperations {
 
   // Add event listeners for mouse interactions
   addEventListeners() {
-    this.mainGrid.mainCanvas.addEventListener(
-      "mousedown",
-      this.handleMouseDown.bind(this)
-    );
-    this.mainGrid.mainCanvas.addEventListener(
-      "mousemove",
-      this.handleMouseMove.bind(this)
-    );
-    window.addEventListener("mouseup", this.handleMouseUp.bind(this));
+  // Bind mouse and touch events for canvas interactions
+  this.mainGrid.mainCanvas.addEventListener(
+    "mousedown",
+    this.handleMouseDown.bind(this)
+  );
+  this.mainGrid.mainCanvas.addEventListener(
+    "touchstart",
+    this.handleMouseDown.bind(this)
+  );
+
+  this.mainGrid.mainCanvas.addEventListener(
+    "mousemove",
+    this.handleMouseMove.bind(this)
+  );
+  this.mainGrid.mainCanvas.addEventListener(
+    "touchmove",
+    this.handleMouseMove.bind(this)
+  );
+
+  // Bind global mouse and touch events for when the user stops interacting
+  window.addEventListener(
+    "mouseup",
+    this.handleMouseUp.bind(this)
+  );
+  window.addEventListener(
+    "touchend",
+    this.handleMouseUp.bind(this)
+  );
+
     // Uncomment if you want to enable marching ants animation
     // document.addEventListener("keydown", (e) => {
     //   this.handleMarchingAnt(e);

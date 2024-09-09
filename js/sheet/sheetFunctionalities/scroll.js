@@ -134,20 +134,34 @@ export class Scroll {
   }
 
   eventListeners() {
-    // Bind mouse events for vertical scrolling
+    // Bind mouse and touch events for vertical scrolling
     this.sliderY.addEventListener(
       "mousedown",
       this.handleMouseDownY.bind(this)
     );
-    // Bind mouse events for horizontal scrolling
+    this.sliderY.addEventListener(
+      "touchstart",
+      this.handleMouseDownY.bind(this)
+    );
+
+    // Bind mouse and touch events for horizontal scrolling
     this.sliderX.addEventListener(
       "mousedown",
+      this.handleMouseDownX.bind(this)  
+    );
+    this.sliderX.addEventListener(
+      "touchstart",
       this.handleMouseDownX.bind(this)
     );
-    // Bind global mouse events
+
+    // Bind global mouse and touch events
     document.addEventListener("mouseup", this.handleMouseUp.bind(this));
+    document.addEventListener("touchend", this.handleMouseUp.bind(this));
+
     document.addEventListener("mousemove", this.handleMouseMove.bind(this));
-  }
+    document.addEventListener("touchmove", this.handleMouseMove.bind(this));
+}
+
 
   /**
    * Handles the mouse down event for starting vertical scrolling.
@@ -243,13 +257,13 @@ export class Scroll {
    this.containerHeight = this.dimension.rHeightPrefixSum[this.dimension.rHeightPrefixSum.length - 1];
    
    if (this.getAttInt(this.sliderY, "height") > 40) {
-      const newSliderYHeight = (this.mainGrid.mainCanvas.height * this.mainGrid.mainCanvas.height) / this.containerHeight
+     const newSliderYHeight = this.getAttInt(this.sliderY, "height") * 0.8;
      this.sliderY.style.height = newSliderYHeight + "px";
      this.maxYTravel =this.getAttInt(this.trackY, "height") - newSliderYHeight;
    }    
 
     this.sliderY.style.top = (this.dimension.shiftTopY/(this.containerHeight-this.mainGrid.mainCanvas.height)) * this.maxYTravel +"px";
-    this.isScrollY = false;
+    // this.isScrollY = false;
 }
     
   /**
@@ -289,8 +303,6 @@ export class Scroll {
     this.dimension.leftIndex = this.dimension.cellXIndex(this.dimension.shiftLeftX);
     this.dimension.rightIndex = this.dimension.cellXIndex(this.dimension.shiftRightX);
  
-    console.log(this.xTravelled)
-
     this.mainGrid.render();
     this.topGrid.render();
   }
@@ -305,7 +317,7 @@ export class Scroll {
     this.containerWidth = this.dimension.cWidthPrefixSum[this.dimension.cWidthPrefixSum.length - 1];
     
     if (this.getAttInt(this.sliderX, "width") > 40) {
-      const newSliderXWidth = (this.mainGrid.mainCanvas.width * this.mainGrid.mainCanvas.width) / this.containerWidth;
+      const newSliderXWidth = this.getAttInt(this.sliderX, "width") * 0.8;
       this.sliderX.style.width = newSliderXWidth + "px";
       this.maxXTravel = this.getAttInt(this.trackX, "width") - newSliderXWidth;
     }

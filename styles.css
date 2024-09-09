@@ -1,5 +1,7 @@
 body {
   margin: 0px;
+  height: 100vh;
+  width: 100vw;
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
@@ -11,9 +13,20 @@ body {
   width: 100vw;
   display: flex;
   flex-direction: column;
-  padding: 10px;
   }
+.progress{
+  position: relative;
+  background-color: #F5FAF7;
+  top: 0px;
+  height: 1.2vh;
+  border-radius: 0;
+}
+.progress-bar {
+  background-color: #107C41;
+  font-size: 10px;
+}
 .tab-list-container{
+  margin-top: 5px;
   height: max-content;
   width: 100%;
   display: flex;
@@ -24,6 +37,7 @@ body {
 }
 .tab-list-container > span {
   margin-right: 10px;
+  font-size: small;
 }
 .tab-list-container > .active {
   border-bottom: 2px solid #107C41;
@@ -33,8 +47,11 @@ body {
   cursor: pointer;
 }
 .focus-zone {
+  margin-left: 7px;
+  margin-right: 7px;
   padding-top: 5px;
   padding-bottom: 5px;
+  font-size: small;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -56,6 +73,11 @@ body {
 .focus-zone-right {
   color: white;
 }
+.focus-zone-inner-btn {
+  background-color: #D5E0DA;
+  border-radius: 5px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
 .file-upload-btn {
   color: white;
 }
@@ -73,7 +95,7 @@ border: 2px solid #107C41;
 
 /* excel */
 #excel {
-  height: 86.5vh;
+  height: 86vh;
   overflow: hidden;
   position: relative;
 } 
@@ -184,15 +206,18 @@ border: 2px solid #107C41;
 /* sheet tab bar */
 .sheet-tab-bar {
   background-color: #f5faf7;
-  height: 3.5vh;
+  height: 4vh;
   width: 100vw;
+  padding: 5px;
   display: flex;
   align-items: end;
   flex-direction: column;
+  overflow-x: auto;
   }
   .sheet-list-container{
     height: inherit;
     width: 100%;
+    height: 100%;
     display: flex;
     justify-content: start;
     align-items: end;
@@ -201,6 +226,14 @@ border: 2px solid #107C41;
   }
   .add-sheet-btn {
     height: inherit;
+    border-radius: 4px;
+    background-color: #1E7C41;
+    color: white;
+    font-size: small;
+  }
+  .add-sheet-btn:hover{
+    background-color: #217346;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
   }
   
   .sheet-list-container > span {
@@ -208,11 +241,15 @@ border: 2px solid #107C41;
     display: flex;
     align-items: end;
     position: relative;
-    margin-right: 5px;
+    margin-left: 7px;
     padding-left: 3px;
+    font-size: small;
+    border-radius: 5px;
+    background-color: #F5FAF7;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
   }
   .sheet-list-container > .active {
-    border-bottom: 3px solid #217346;  
+    border-bottom: 3px solid #217346;
     font-weight: bold;
   }
   .sheet-tab-btn:hover {
@@ -226,7 +263,7 @@ border: 2px solid #107C41;
     width: 20px;
     font-size: 15px;
     height: inherit;
-    color: black;
+    color: rgb(236, 119, 119);
     text-align: center;
     display: flex;
     align-items: end;
@@ -236,3 +273,22 @@ border: 2px solid #107C41;
     background-color: rgb(236, 119, 119);
     color:  white;
     }
+
+/* media query */
+@media (max-width: 915px) {
+  .focus-zone {
+    font-size: smaller;
+  }
+}
+
+@media (max-width: 800px) {
+  .focus-zone {
+    font-size: x-small;
+  }
+}
+
+@media (max-width: 800px) {
+  .focus-zone {
+    font-size: xx-small;
+  }
+}

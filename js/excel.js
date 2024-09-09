@@ -1,4 +1,4 @@
-import { Sheet } from './imports/sheet.js'
+import { Sheet } from './sheet/sheet.js'
 
 class Excel {
     constructor() {
@@ -68,11 +68,12 @@ class Excel {
 
         // Create a button element to allow closing the sheet
         const sheetCloseBtnElement = document.createElement("button")
-        sheetCloseBtnElement.classList.add("sheet-close-btn", "sheet-close-" + currentSheetNum)
+        sheetCloseBtnElement.classList.add("sheet-close-btn", "sheet-close-" + currentSheetNum, "d-flex", "justify-content-center", "align-items-center")
 
         // Add a "X" text to the close button
         const sheetCloseBtnTextElement = document.createElement("span")
-        sheetCloseBtnTextElement.innerText = "X"
+        sheetCloseBtnTextElement.innerHTML = '<span class="iconify" data-icon="maki:cross" data-width="16" data-height="17"></span>'
+
         sheetCloseBtnElement.appendChild(sheetCloseBtnTextElement)
 
         // Append the label and close button to the sheet tab element
@@ -83,9 +84,10 @@ class Excel {
         this.sheetTabBtns["sheet" + currentSheetNum] = sheetTabBtnElement
 
         for (let btn in this.sheetTabBtns) {
-            this.sheetTabBtns[btn].style.backgroundColor = "#F5FAF7"
+            this.sheetTabBtns[btn].classList.remove("active")
         }
-        sheetTabBtnElement.style.backgroundColor = "#D5E0DA"
+
+        sheetTabBtnElement.classList.add("active")
 
         // Append the newly created sheet tab to the list container in the DOM
         const sheetListContainerElement = document.querySelector(".sheet-list-container")
@@ -103,10 +105,10 @@ class Excel {
             this.excelElement.appendChild(currentSpreadsheet.spreadsheetElement)
 
             for (let btn in this.sheetTabBtns) {
-                this.sheetTabBtns[btn].style.backgroundColor = "#F5FAF7"
+                this.sheetTabBtns[btn].classList.remove("active")
             }
 
-            sheetTabBtnElement.style.backgroundColor = "#D5E0DA"
+            sheetTabBtnElement.classList.add("active");
         })
 
         sheetCloseBtnElement.addEventListener("click", () => {
@@ -118,8 +120,10 @@ class Excel {
 
                 const previousSheet = this.sheets[Object.keys(this.sheets)[Object.keys(this.sheets).length - 1]]
                 const previousSheetTabBtn = this.sheetTabBtns[Object.keys(this.sheetTabBtns)[Object.keys(this.sheetTabBtns).length - 1]]
+
+                this.excelElement.textContent = ""
                 this.excelElement.appendChild(previousSheet.spreadsheetElement)
-                previousSheetTabBtn.style.backgroundColor = "#D5E0DA"
+                previousSheetTabBtn.classList.add("active");
             } else {
                 alert("sorry :( you cant remove the last sheet")
             }
