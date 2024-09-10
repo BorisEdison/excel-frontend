@@ -41,20 +41,6 @@ export class Dimension {
      */
     this.selectedSide = []; // Selected cells in the side grid
 
-    // Initialize arrays to store cell values
-    /**
-     * @type { Array<String> }
-     */
-    this.topValues = []; // Values for the top grid (column headers)
-    /**
-     * @type { Array<any> }
-     */
-    this.mainValues = []; // Values for the main grid (spreadsheet data)
-    /**
-     * @type { Array<Number> }
-     */
-    this.sideValues = []; // Values for the side grid (row headers)
-
     // Prefix sum arrays for efficient range calculations
     /**
      * @type { Array<number> }
@@ -100,6 +86,11 @@ export class Dimension {
      * @type { number }
      */
     this.rightIndex; // Index of the right-most visible column
+
+    /**
+     * @type { number }
+     */
+    this.dashOffset = 0; // 
     /**
      * @type { number }
      */

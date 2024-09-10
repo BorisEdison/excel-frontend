@@ -19,8 +19,6 @@ export class GridOperations {
     this.xValEnd = null;
     this.yValEnd = null;
 
-    this.dashOffset = 0;
-
     this.currentIndexX = null;
     this.currentIndexY = null;
     this.previousIndexX = -1;
@@ -109,15 +107,14 @@ export class GridOperations {
       }
       
       this.mainGrid.render()
-
     }
   }
 
   // Handle mouse down event
   handleMouseDown(e) {
     window.cancelAnimationFrame(this.rafId);
-    this.isSelecting = true;
     this.isAnimated = false;
+    this.isSelecting = true;
 
     this.selectIndexX = this.dimension.cellXIndex(
       this.dimension.shiftLeftX + e.offsetX
@@ -126,19 +123,7 @@ export class GridOperations {
       this.dimension.shiftTopY + e.offsetY
     );
 
-    // Clear previous selections
-    this.removeElements(this.dimension.selectedMain);
-    this.removeElements(this.dimension.selectedTop);
-    this.removeElements(this.dimension.selectedSide);
-
-    // Reset selected arrays and values
-    this.dimension.selectedMain = [];
-    this.dimension.selectedTop = [];
-    this.dimension.selectedSide = [];
-
-    this.dimension.topValues = [];
-    this.dimension.mainValues = [];
-    this.dimension.sideValues = [];
+    this.clearSelection() 
 
     // Select the initial cell
     this.addElements(
@@ -154,11 +139,6 @@ export class GridOperations {
       this.dimension.selectedTop
     );
 
-    // Update values based on selection
-    this.getValues(this.dimension.topValues, this.dimension.selectedTop);
-    this.getValues(this.dimension.mainValues, this.dimension.selectedMain);
-    this.getValues(this.dimension.sideValues, this.dimension.selectedSide);
-
     // Handle input box updates if applicable
     if (this.isInput) {
       this.updateText(
@@ -172,6 +152,7 @@ export class GridOperations {
     this.inputBox();
 
     this.prevSelectIndexY = this.selectIndexY;
+    this.prevSelectIndexX = this.selectIndexX;
   }
 
   // Show the input box at the selected cell position
@@ -190,7 +171,7 @@ export class GridOperations {
   }
 
   // Update the cell value and redraw it
-  async updateText(cell, value, prevSelectIndexY) {
+  async updateText(cell, value, index) {
     // return if value is not changed
     if(cell.value == value) {
       return ;
@@ -198,106 +179,80 @@ export class GridOperations {
 
     cell.value = value;
     cell.drawCell();
-    await this.fileOperations.updateCell(prevSelectIndexY);
+    await this.fileOperations.updateCell(index);
   }
 
   // Handle mouse move event
   handleMouseMove(e) {
     if (this.isSelecting) {
-      this.currentIndexX = this.dimension.cellXIndex(
-        this.dimension.shiftLeftX + e.offsetX
-      );
-      this.currentIndexY = this.dimension.cellYIndex(
-        this.dimension.shiftTopY + e.offsetY
-      );
-
-      if (
-        this.previousIndexX === this.currentIndexX &&
-        this.previousIndexY === this.currentIndexY
-      ) {
-        return; // No change in selection
-      } else {
-        this.previousIndexX = this.currentIndexX;
-        this.previousIndexY = this.currentIndexY;
-      }
-
-      // Clear previous selections
-      this.removeElements(this.dimension.selectedMain);
-      this.removeElements(this.dimension.selectedSide);
-      this.removeElements(this.dimension.selectedTop);
-
-      // Reset selected arrays and values
-      this.dimension.selectedMain = [];
-      this.dimension.selectedSide = [];
-      this.dimension.selectedTop = [];
-
-      this.dimension.topValues = [];
-      this.dimension.mainValues = [];
-      this.dimension.sideValues = [];
-
-      // Update selection based on mouse movement
-      for (
-        let i = Math.min(this.currentIndexY, this.selectIndexY);
-        i <= Math.max(this.currentIndexY, this.selectIndexY);
-        i++
-      ) {
-        this.addElements(
-          this.sideGrid.sideCells[i],
-          this.dimension.selectedSide
-        );
-        for (
-          let j = Math.min(this.currentIndexX, this.selectIndexX);
-          j <= Math.max(this.currentIndexX, this.selectIndexX);
-          j++
-        ) {
-          if (i === Math.min(this.currentIndexY, this.previousIndexY)) {
-            this.addElements(
-              this.topGrid.topCells[j],
-              this.dimension.selectedTop
-            );
-          }
-          this.addElements(
-            this.mainGrid.mainCells[i][j],
-            this.dimension.selectedMain
-          );
-        }
-      }
-
-      this.getValues(this.dimension.topValues, this.dimension.selectedTop);
-      this.getValues(this.dimension.mainValues, this.dimension.selectedMain);
-      this.getValues(this.dimension.sideValues, this.dimension.selectedSide);
-      
-      this.selectionBoundary() 
+      this.selection(e)
     }
 
     // Calculate and display statistics
     this.displayStatistics()
   }
 
-  selectionBoundary() {
-    // Update the bounding box for the selection
-    this.xValStart = this.dimension.selectedMain[0].xVal;
-    this.yValStart = this.dimension.selectedMain[0].yVal;
-    this.xValEnd =
-      this.dimension.selectedMain[this.dimension.selectedMain.length - 1]
-        .xVal +
-      this.dimension.selectedMain[this.dimension.selectedMain.length - 1]
-        .width;
-    this.yValEnd =
-      this.dimension.selectedMain[this.dimension.selectedMain.length - 1]
-        .yVal +
-      this.dimension.selectedMain[this.dimension.selectedMain.length - 1]
-        .height;
-
-
-    // Draw border around the selection
-    this.mainGrid.mainCtx.strokeStyle = "rgba(0, 128, 0, 0.8)";
-    this.mainGrid.mainCtx.strokeRect(
-      this.xValStart,
-      this.yValStart,
-      this.xValEnd - this.xValStart,
-      this.yValEnd - this.yValStart
+  selection(e) {
+    this.currentIndexX = this.dimension.cellXIndex(
+      this.dimension.shiftLeftX + e.offsetX
     );
+    this.currentIndexY = this.dimension.cellYIndex(
+      this.dimension.shiftTopY + e.offsetY
+    );
+
+    if (
+      this.previousIndexX === this.currentIndexX &&
+      this.previousIndexY === this.currentIndexY
+    ) {
+      return; // No change in selection
+    } else {
+      this.previousIndexX = this.currentIndexX;
+      this.previousIndexY = this.currentIndexY;
+    }
+
+    this.clearSelection()
+
+    // Update selection based on mouse movement
+    for (
+      let i = Math.min(this.currentIndexY, this.selectIndexY);
+      i <= Math.max(this.currentIndexY, this.selectIndexY);
+      i++
+    ) {
+      this.addElements(
+        this.sideGrid.sideCells[i],
+        this.dimension.selectedSide
+      );
+      for (
+        let j = Math.min(this.currentIndexX, this.selectIndexX);
+        j <= Math.max(this.currentIndexX, this.selectIndexX);
+        j++
+      ) {
+        if (i === Math.min(this.currentIndexY, this.previousIndexY)) {
+          this.addElements(
+            this.topGrid.topCells[j],
+            this.dimension.selectedTop
+          );
+        }
+        this.addElements(
+          this.mainGrid.mainCells[i][j],
+          this.dimension.selectedMain
+        );
+      }
+    }
+
+    this.mainGrid.selectionBoundary() 
+  }
+
+  clearSelection() {
+      // Clear previous selections
+      this.removeElements(this.dimension.selectedMain);
+      this.removeElements(this.dimension.selectedTop);
+      this.removeElements(this.dimension.selectedSide);
+  
+      // Reset selected arrays and values
+      this.dimension.selectedMain = [];
+      this.dimension.selectedTop = [];
+      this.dimension.selectedSide = [];
   }
 
   displayStatistics() {
@@ -308,8 +263,8 @@ export class GridOperations {
       this.max = -Number.MAX_VALUE;
 
       for (let i = 0; i < this.dimension.selectedMain.length; i++) {
-        if (this.dimension.mainValues[i] === "") continue;
-        let value = Number(this.dimension.mainValues[i]);
+        const value = Number(this.dimension.selectedMain[i].value)
+        if ( value === "") continue;
 
         if (!Number.isNaN(value)) {
           this.sum += value;
@@ -336,16 +291,10 @@ export class GridOperations {
       }
     }
   }
+
   // Handle mouse up event
   handleMouseUp() {
     this.isSelecting = false;
-  }
-
-  // Collect values from the cells
-  getValues(values, arr) {
-    for (let i = 0; i < arr.length; i++) {
-      values.push(arr[i].value);
-    }
   }
 
   // Add a cell to the selected array
@@ -367,35 +316,21 @@ export class GridOperations {
     handleMarchingAnt() {
       if (this.dimension.selectedMain.length > 1) {
         this.isAnimated = true;
-          window.cancelAnimationFrame(this.rafId);
+        window.cancelAnimationFrame(this.rafId);
         this.march();
       }
     }
 
     march() {
-      this.dashOffset += 2;
-      if (this.dashOffset > 16) {
-        this.dashOffset = 0;
+      this.dimension.dashOffset += 1;
+      console.log(this.dimension.dashOffset)
+      if (this.dimension.dashOffset > 16) {
+        this.dimension.dashOffset = 0;
       }
-      this.drawDottedRect();
+      this.mainGrid.drawDottedRect();
       this.rafId = window.requestAnimationFrame(() => {
         this.mainGrid.render();
         this.march();
       });
     }
-
-  drawDottedRect() {
-    this.mainGrid.mainCtx.setLineDash([5, 5]);
-    this.mainGrid.mainCtx.lineDashOffset = - this.dashOffset;
-    this.mainGrid.mainCtx.strokeStyle = "rgba(0, 128, 0, 0.9)";
-    this.mainGrid.mainCtx.lineWidth = 3;
-    this.mainGrid.mainCtx.strokeRect(
-      this.xValStart,
-      this.yValStart,
-      this.xValEnd - this.xValStart,
-      this.yValEnd - this.yValStart
-    );
-    this.mainGrid.mainCtx.setLineDash([]);
-    this.mainGrid.mainCtx.lineWidth = 1;
-  }
 }

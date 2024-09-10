@@ -103,8 +103,8 @@ export class Graph {
         for (let j = 0; j < this.dimension.selectedTop.length; j++) {
           xValues[j] = this.dimension.selectedTop[j].value;
           dataSet.data.push(
-            this.mainGrid.mainCells[this.dimension.sideValues[i] - 1][
-              this.dimension.getColumnNumber(this.dimension.topValues[j]) - 1
+            this.mainGrid.mainCells[this.dimension.selectedSide[i].value - 1][
+              this.dimension.getColumnNumber(this.dimension.selectedTop[j].value) - 1
             ].value
           );
         }
@@ -123,8 +123,8 @@ export class Graph {
         for (let j = 0; j < this.dimension.selectedSide.length; j++) {
           xValues[j] = this.dimension.selectedSide[j].value;
           dataSet.data.push(
-            this.mainGrid.mainCells[this.dimension.sideValues[j] - 1][
-              this.dimension.getColumnNumber(this.dimension.topValues[i]) - 1
+            this.mainGrid.mainCells[this.dimension.selectedSide[j].value - 1][
+              this.dimension.getColumnNumber(this.dimension.selectedTop[i].value) - 1
             ].value
           );
         }

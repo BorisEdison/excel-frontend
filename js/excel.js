@@ -104,6 +104,8 @@ class Excel {
             // Append the spreadsheet element to the Excel element
             this.excelElement.appendChild(currentSpreadsheet.spreadsheetElement)
 
+            currentSpreadsheet.gridOperations.inputBox()  // change this after using singleton
+
             for (let btn in this.sheetTabBtns) {
                 this.sheetTabBtns[btn].classList.remove("active")
             }

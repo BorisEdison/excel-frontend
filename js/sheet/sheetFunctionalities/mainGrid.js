@@ -122,7 +122,54 @@ export class MainGrid {
                 this.mainCells[i][j].drawCell(); // Draw the cell on the canvas
             }
         }
-    }
+
+        if (this.dimension.selectedMain.length > 1) {
+            this.selectionBoundary()
+            }
+        }
+
+    selectionBoundary() {
+        // Update the bounding box for the selection
+        this.xValStart = this.dimension.selectedMain[0].xVal;
+        this.yValStart = this.dimension.selectedMain[0].yVal;
+        this.xValEnd =
+            this.dimension.selectedMain[this.dimension.selectedMain.length - 1]
+            .xVal +
+            this.dimension.selectedMain[this.dimension.selectedMain.length - 1]
+            .width;
+        this.yValEnd =
+            this.dimension.selectedMain[this.dimension.selectedMain.length - 1]
+            .yVal +
+            this.dimension.selectedMain[this.dimension.selectedMain.length - 1]
+            .height;
+    
+    
+        // Draw border around the selection
+        this.mainCtx.lineWidth = 2;
+        this.mainCtx.strokeStyle = "rgba(0, 128, 0, 0.8)";
+        this.mainCtx.strokeRect(
+            this.xValStart,
+            this.yValStart,
+            this.xValEnd - this.xValStart,
+            this.yValEnd - this.yValStart
+        );
+        this.mainCtx.lineWidth = 1;
+        }
+
+    drawDottedRect() {
+        this.mainCtx.setLineDash([5, 5]);
+        this.mainCtx.lineDashOffset = - this.dimension.dashOffset;
+        this.mainCtx.strokeStyle = "rgba(255, 255, 255, 1)";
+        this.mainCtx.lineWidth = 3;
+        this.mainCtx.strokeRect(
+            this.xValStart,
+            this.yValStart,
+            this.xValEnd - this.xValStart,
+            this.yValEnd - this.yValStart
+        );
+        this.mainCtx.setLineDash([]);
+        this.mainCtx.lineWidth = 1;
+        }
 
     /**
      * Add rows to the grid.
