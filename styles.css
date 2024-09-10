@@ -89,10 +89,10 @@ body {
   padding: 0;
   z-index: 100;
   outline: none;
-  border: 2px solid #107C41;
+  border: none;
 }  
 .input-box:focus{
-border: 2px solid #107C41;
+border: none;
 }
 
 /* excel */

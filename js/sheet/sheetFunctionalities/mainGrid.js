@@ -123,7 +123,7 @@ export class MainGrid {
             }
         }
 
-        if (this.dimension.selectedMain.length > 1) {
+        if (this.dimension.selectedMain.length > 0) {
             this.selectionBoundary()
             }
         }

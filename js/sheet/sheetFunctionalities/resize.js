@@ -106,6 +106,7 @@ export class Resize {
           this.topGrid.topCanvas.style.cursor = "col-resize"; // Change cursor to indicate resizing
           this.adjustExtra(this.indX, event.movementX, this.dimension.cWidthPrefixSum); // Adjust column width
           this.topGrid.render(); // Re-render top grid
+          
         }
         else {
           this.sideGrid.sideCanvas.style.cursor = "row-resize"; // Change cursor to indicate resizing

@@ -78,6 +78,7 @@ export class GridOperations {
     // enable marching ants animation
     document.addEventListener("keydown", (e) => {
       if (e.ctrlKey && e.key.toLowerCase() === 'c') {
+        this.copyToClipboard();
         this.handleMarchingAnt(e);
       }
     });
@@ -162,11 +163,11 @@ export class GridOperations {
     this.cellInput.value = this.selectedCell.value;
     this.cellInput.style.display = "block";
     this.cellInput.style.top =
-      this.dimension.rHeightPrefixSum[this.selectIndexY] - this.dimension.shiftTopY + this.mainGrid.mainCanvas.offsetTop + "px";
+      this.dimension.rHeightPrefixSum[this.selectIndexY] - this.dimension.shiftTopY + this.mainGrid.mainCanvas.offsetTop + 3 + "px";
     this.cellInput.style.left =
-      this.dimension.cWidthPrefixSum[this.selectIndexX] - this.dimension.shiftLeftX + this.mainGrid.mainCanvas.offsetLeft + "px";
-    this.cellInput.style.height = this.selectedCell.height + "px";
-    this.cellInput.style.width = this.selectedCell.width + "px";
+      this.dimension.cWidthPrefixSum[this.selectIndexX] - this.dimension.shiftLeftX + this.mainGrid.mainCanvas.offsetLeft + 3 + "px";
+    this.cellInput.style.height = this.selectedCell.height - 5 + "px";
+    this.cellInput.style.width = this.selectedCell.width - 5 + "px";
     this.isInput = true;
   }
 
@@ -312,9 +313,46 @@ export class GridOperations {
     }
   }
 
+      /**
+     * Copies selected cells from the grid to the clipboard in a CSV-like format.
+     * Cells are copied from the range defined by (i, j) to (last_i, last_j).
+     */
+      copyToClipboard() {
+        // Initialize an array to hold the copied values
+        let copiedData = [];
+
+        // Loop through the selected range of cells
+        for (let i = 0; i < this.dimension.selectedSide.length; i++) {
+          let rowData = [];
+          for (let j = 0; j < this.dimension.selectedTop.length; j++) {
+            // Get the value of the current cell
+            let value = this.mainGrid.mainCells[this.dimension.selectedSide[i].value - 1][
+              this.dimension.getColumnNumber(this.dimension.selectedTop[j].value) - 1
+            ].value
+           
+            rowData.push(value)
+          }  
+          // Join the row values by tabs (or commas) and push to copiedData
+          copiedData.push(rowData.join("\t"));
+        }
+
+        // Convert the copied data to a single string with line breaks for each row
+        let clipboardContent = copiedData.join("\n");
+
+        // Use the Clipboard API to copy the string to the clipboard
+        navigator.clipboard
+            .writeText(clipboardContent)
+            .then(() => {
+                console.log("Copied to clipboard:", clipboardContent);
+            })
+            .catch((err) => {
+                console.error("Failed to copy text to clipboard:", err);
+            });
+    }
+
   // marching ant
     handleMarchingAnt() {
-      if (this.dimension.selectedMain.length > 1) {
+      if (this.dimension.selectedMain.length > 0) {
         this.isAnimated = true;
         window.cancelAnimationFrame(this.rafId);
         this.march();

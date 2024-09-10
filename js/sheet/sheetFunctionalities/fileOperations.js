@@ -38,17 +38,23 @@ export class FileOperations {
     })
     .build();
     
-    this.connection.on("ReceiveUpdate", function (message) {
+    this.connection.on("ReceiveUpdate", (message) =>  {
       progressDivElement.style.display = "block"
 
       message = parseInt(message)
-
-      console.log(message)
 
       progressBarElement.style.width = message + "%";
       progressBarElement.innerText = message + "%"; 
 
       if(message == 100){
+        setTimeout(() => {
+          const offset = 0;
+          const limit = this.mainGrid.mainCells.length;
+  
+          // Fetch the updated file data and render the grid
+          this.getFile(offset, limit);
+        },1000)
+
         setTimeout(() => {
           progressDivElement.style.display = "none";
             progressBarElement.style.width = 0 + "%";
@@ -57,7 +63,7 @@ export class FileOperations {
       }
     });
 
-    this.connection.start().catch(function (err) {
+    this.connection.start().catch( (err) => {
       return console.error(err.toString());
     });
   }
@@ -83,14 +89,6 @@ export class FileOperations {
         const errorText = await response.text();
         console.error("Server responded with an error:", errorText);
         alert("Failed to upload the file");
-      } else {
-
-        const offset = 0;
-        const limit = this.mainGrid.mainCells.length;
-
-        // Fetch the updated file data and render the grid
-        await this.getFile(offset, limit);
-        this.mainGrid.render();
       }
     } catch (error) {
       console.error("Could not connect to server:", error);
@@ -129,6 +127,8 @@ export class FileOperations {
           this.mainGrid.mainCells[i][j - 1].value = values[i][j]; // subjectracting j with 1 to skip id column
         }
       }
+
+      this.mainGrid.render();
     } catch (error) {
       console.error("Could not get items:", error);
     }
