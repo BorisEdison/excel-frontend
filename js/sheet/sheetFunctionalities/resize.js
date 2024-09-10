@@ -40,9 +40,17 @@ export class Resize {
      */
     this.isMouseDown = false; // Flag to track mouse state
     /**
+     * @type { String }
+     */
+        this.mouseDownDirection; // string to keep track of resize direction
+    /**
      * @type { number }
      */
-    this.ind = -1; // Index of the column being resized
+    this.indX = -1; // Index of the column being resized
+    /**
+     * @type { number }
+     */
+        this.indY = -1; // Index of the row being resized
 
     this.addEventListeners();
   }
@@ -52,15 +60,15 @@ export class Resize {
    * @returns {void}
    */
   addEventListeners() {
-    window.addEventListener("mousemove", this.mouseMove.bind(this));
     this.topGrid.topCanvas.addEventListener(
       "mousedown",
-      this.mouseDown.bind(this)
+      this.mouseDown.bind(this, 'horizontal')
     );
     this.sideGrid.sideCanvas.addEventListener(
       "mousedown",
-      this.mouseDown.bind(this)
+      this.mouseDown.bind(this, 'vertical')
     );
+    window.addEventListener("mousemove", this.mouseMove.bind(this));
     window.addEventListener("mouseup", this.mouseUp.bind(this));
   }
 
@@ -68,7 +76,8 @@ export class Resize {
    * Handles the mouse down event, indicating that the mouse button has been pressed.
    * @returns {void}
    */
-  mouseDown() {
+  mouseDown(direction, event) {
+    this.mouseDownDirection = direction;
     this.isMouseDown = true; // Start resizing
   }
 
@@ -76,7 +85,7 @@ export class Resize {
    * Handles the mouse up event, finalizing the resizing operation and updating the grid.
    * @returns {void}
    */
-  mouseUp() {
+  mouseUp(e) {
     this.mainGrid.render(); // Re-render main grid after resizing
     if (this.dimension.selectedMain.length >= 1) {
       this.gridOperations.inputBox(); // Show input box if any cells are selected
@@ -92,17 +101,26 @@ export class Resize {
   mouseMove(event) {
     if (this.isMouseDown) {
       // When resizing
-      if (this.ind !== -1) {
-        this.topGrid.topCanvas.style.cursor = "col-resize"; // Change cursor to indicate resizing
-        this.adjustColumnWidth(this.ind, event.movementX); // Adjust column width
-
-        this.topGrid.render(); // Re-render top grid
+      if (this.indX != -1 || this.indY != -1) {
+        if(this.mouseDownDirection === 'horizontal'){
+          this.topGrid.topCanvas.style.cursor = "col-resize"; // Change cursor to indicate resizing
+          this.adjustExtra(this.indX, event.movementX, this.dimension.cWidthPrefixSum); // Adjust column width
+          this.topGrid.render(); // Re-render top grid
+        }
+        else {
+          this.sideGrid.sideCanvas.style.cursor = "row-resize"; // Change cursor to indicate resizing
+          this.adjustExtra(this.indY, event.movementY, this.dimension.rHeightPrefixSum); // Adjust column width
+          this.sideGrid.render();
+        }
       }
     } else {
       // When not resizing
       this.updateResizeIndex(event);
       this.topGrid.topCanvas.style.cursor =
-        this.ind === -1 ? "default" : "col-resize"; // Change cursor based on whether resizing is possible
+        this.indX === -1 ? "default" : "col-resize"; // Change cursor based on whether resizing is possible
+      
+      this.sideGrid.sideCanvas.style.cursor =
+        this.indY === -1 ? "default" : "row-resize";
     }
   }
 
@@ -113,9 +131,13 @@ export class Resize {
    */
   updateResizeIndex(event) {
     // Calculate the horizontal distance from the left of the grid
-    const distance =
+    const distanceX =
       event.clientX - this.topGrid.rect.left + this.dimension.shiftLeftX;
-    this.ind = this.findResizeIndex(distance);
+    const distanceY = 
+      event.clientY - this.sideGrid.rect.top + this.dimension.shiftTopY;
+
+    this.indX = this.findResizeIndex(distanceX, this.dimension.cWidthPrefixSum);
+    this.indY = this.findResizeIndex(distanceY, this.dimension.rHeightPrefixSum)
   }
 
   /**
@@ -123,24 +145,24 @@ export class Resize {
    * @param {number} distance - The horizontal distance from the left of the grid where resizing is detected.
    * @returns {number} The index of the column to resize, or -1 if no column is found within the resize range.
    */
-  findResizeIndex(distance) {
+  findResizeIndex(distance, prefixSum) {
     if (distance <= 5) {
       return -1; // Return -1 if distance is too small
     }
 
     let left = 0;
-    let right = this.dimension.cWidthPrefixSum.length - 1;
+    let right = prefixSum.length - 1;
 
     // Binary search to find the column index
     while (left <= right) {
       const mid = Math.floor((left + right) / 2);
 
       if (
-        distance >= this.dimension.cWidthPrefixSum[mid] - 5 &&
-        distance <= this.dimension.cWidthPrefixSum[mid] + 5
+        distance >= prefixSum[mid] - 5 &&
+        distance <= prefixSum[mid] + 5
       ) {
         return mid; // Found the column index
-      } else if (this.dimension.cWidthPrefixSum[mid] < distance) {
+      } else if (prefixSum[mid] < distance) {
         left = mid + 1; // Search the right half
       } else {
         right = mid - 1; // Search the left half
@@ -156,13 +178,14 @@ export class Resize {
    * @param {number} extra - The amount by which to adjust the column width.
    * @returns {void}
    */
-  adjustColumnWidth(index, extra) {
-    for (let i = index; i < this.dimension.cWidthPrefixSum.length; i++) {
+  adjustExtra(index, extra, prefixSum) {
+    for (let i = index; i < prefixSum.length; i++) {
       // Check if the new width is less than the minimum width (30 pixels)
-      if (this.dimension.cWidthPrefixSum[i] - this.dimension.cWidthPrefixSum[i - 1] + extra < 30) {
+      if (prefixSum[i] - prefixSum[i - 1] + extra < 10) {
         break; // Stop adjusting if the minimum width constraint is violated
       }
-      this.dimension.cWidthPrefixSum[i] += extra; // Adjust the width
+
+      prefixSum[i] += extra; // Adjust the width
     }
   }
 }

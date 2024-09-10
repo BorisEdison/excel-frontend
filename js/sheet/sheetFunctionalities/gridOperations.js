@@ -323,7 +323,6 @@ export class GridOperations {
 
     march() {
       this.dimension.dashOffset += 1;
-      console.log(this.dimension.dashOffset)
       if (this.dimension.dashOffset > 16) {
         this.dimension.dashOffset = 0;
       }
