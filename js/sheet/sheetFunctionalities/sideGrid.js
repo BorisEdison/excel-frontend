@@ -94,6 +94,24 @@ export class SideGrid {
       this.sideCells[i].height = this.dimension.rHeightPrefixSum[i + 1] - this.dimension.rHeightPrefixSum[i];
       this.sideCells[i].drawCell(); // Draw the cell on the canvas
     }
+
+    if (this.dimension.selectedSide.length > 0) {
+      this.selectionBoundary()
+    }
+  }
+
+  selectionBoundary() {
+    // Update the bounding box for the selection
+    this.xValStart =  this.dimension.selectedSide[0].xVal + this.dimension.selectedSide[0].width - 2;
+    this.yValStart = this.dimension.selectedSide[0].yVal;
+    this.xValEnd = this.dimension.selectedSide[0].xVal + this.dimension.selectedSide[0].width - 2;
+    this.yValEnd = this.dimension.selectedSide[this.dimension.selectedSide.length - 1].yVal + this.dimension.selectedSide[this.dimension.selectedSide.length - 1].height;
+
+    // Draw border around the selection
+    this.sideCtx.lineWidth = 2;
+    this.sideCtx.strokeStyle = "rgba(0, 128, 0, 0.8)";
+    this.sideCtx.strokeRect(this.xValStart, this.yValStart, this.xValEnd - this.xValStart, this.yValEnd - this.yValStart);
+    this.sideCtx.lineWidth = 1;
   }
 
   /**

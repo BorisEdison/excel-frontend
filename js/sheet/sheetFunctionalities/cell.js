@@ -71,10 +71,12 @@ export class CellStruct {
     this.ctx.fillStyle = "#000"; // Text color
   
     // Draw the text in the center of the cell
+    this.ctx.textAlign = "center"; // Center align horizontally
+    this.ctx.textBaseline = "middle"
     this.ctx.fillText(
       this.value,
-      this.xVal + 12, // Adjust X position to add padding
-      this.yVal + this.height / 1.2, // Center text vertically
+      this.xVal + (this.width/2), // Adjust X position to add padding
+      this.yVal + (this.height/2), // Center text vertically
     );
   
     // Restore the canvas state to undo the clipping

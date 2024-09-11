@@ -74,12 +74,23 @@ export class GridOperations {
     "touchend",
     this.handleMouseUp.bind(this)
   );
+  this.topGrid.topCanvas.addEventListener(
+    "click",
+    this.selectColumns.bind(this)
+  );
+  this.sideGrid.sideCanvas.addEventListener(
+    "click",
+    this.selectRows.bind(this)
+  );
 
     // enable marching ants animation
     document.addEventListener("keydown", (e) => {
       if (e.ctrlKey && e.key.toLowerCase() === 'c') {
         this.copyToClipboard();
         this.handleMarchingAnt(e);
+      }
+      else if (e.ctrlKey && e.key.toLowerCase() === 'v') {
+        this.pasteFromClipboard();
       }
     });
 
@@ -145,7 +156,8 @@ export class GridOperations {
       this.updateText(
         this.selectedCell,
         this.cellInput.value,
-        this.prevSelectIndexY
+        this.prevSelectIndexY,
+        this.mainGrid.mainCells[0][this.prevSelectIndexX].value
       );
       this.isInput = false;
     }
@@ -172,7 +184,7 @@ export class GridOperations {
   }
 
   // Update the cell value and redraw it
-  async updateText(cell, value, index) {
+  async updateText(cell, value, index, column) {
     // return if value is not changed
     if(cell.value == value) {
       return ;
@@ -180,7 +192,8 @@ export class GridOperations {
 
     cell.value = value;
     cell.drawCell();
-    await this.fileOperations.updateCell(index);
+    console.log(value,index,column)
+    await this.fileOperations.updateCell(value, index, column);
   }
 
   // Handle mouse move event
@@ -242,6 +255,8 @@ export class GridOperations {
     }
 
     this.mainGrid.selectionBoundary() 
+    this.topGrid.selectionBoundary()
+    this.sideGrid.selectionBoundary()
   }
 
   clearSelection() {
@@ -298,6 +313,38 @@ export class GridOperations {
     this.isSelecting = false;
   }
 
+  selectColumns(event) {
+    const distanceX = 
+     event.clientX - this.topGrid.rect.left + this.dimension.shiftLeftX;
+    this.indX = this.dimension.cellXIndex(distanceX, this.dimension.cWidthPrefixSum);
+
+    this.clearSelection()
+
+    for (let i = 0; i < this.mainGrid.mainCells.length; i++) {
+        this.addElements(this.topGrid.topCells[this.indX],this.dimension.selectedTop);
+        this.addElements(this.mainGrid.mainCells[i][this.indX],this.dimension.selectedMain);
+    }
+
+    this.topGrid.render()
+    this.mainGrid.render()
+  }
+
+  selectRows(event) {
+    const distanceY = 
+      event.clientY - this.sideGrid.rect.top + this.dimension.shiftTopY;
+    this.indY = this.dimension.cellYIndex(distanceY, this.dimension.rHeightPrefixSum);
+
+    this.clearSelection()
+
+    for (let j = 0; j < this.mainGrid.mainCells[0].length; j++) {
+        this.addElements(this.sideGrid.sideCells[this.indY],this.dimension.selectedSide);
+        this.addElements(this.mainGrid.mainCells[this.indY][j],this.dimension.selectedMain);
+    }
+
+    this.sideGrid.render()
+    this.mainGrid.render()
+  }
+
   // Add a cell to the selected array
   addElements(cell, arr) {
     arr.push(cell);
@@ -350,6 +397,34 @@ export class GridOperations {
             });
     }
 
+  /**
+   * Reads data from the clipboard and logs each cell value.
+   * Also logs "New Line" when a new row begins.
+   */
+      pasteFromClipboard() {
+        navigator.clipboard
+            .readText()
+            .then((clipboardContent) => {
+                // Split the clipboard content into rows (by newline characters)
+                let rows = clipboardContent.split("\n");
+
+                rows.forEach((row, rowIndex) => {
+                    // Split each row into cells (by tabs or other delimiter)
+                    let cells = row.split("\t");
+
+                    cells.forEach((cellValue, colIndex) => {
+                      this.mainGrid.mainCells[this.selectIndexY+rowIndex][this.selectIndexX+colIndex].value=cellValue;
+                    });
+                });
+                this.inputBox();
+                this.mainGrid.render();
+            })
+            .catch((err) => {
+                console.error("Failed to read from clipboard:", err);
+            });
+    }
+
+      
   // marching ant
     handleMarchingAnt() {
       if (this.dimension.selectedMain.length > 0) {

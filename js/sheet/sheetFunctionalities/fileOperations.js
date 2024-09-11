@@ -142,25 +142,13 @@ export class FileOperations {
    * @returns {Promise<void>} - A promise that resolves when the update is complete.
    * @throws Will throw an error if the fetch request fails.
    */
-  async updateCell(index) {
+  async updateCell(value, index, column) {
     try {
       // Prepare the data model from the grid, with id starting from 1
-      const dataModel = {
-        id: index + 1, // The id starts from 1, so add 1 to the index
-        email_id: this.mainGrid.mainCells[index][0].value,
-        name: this.mainGrid.mainCells[index][1].value,
-        country: this.mainGrid.mainCells[index][2].value,
-        state: this.mainGrid.mainCells[index][3].value,
-        city: this.mainGrid.mainCells[index][4].value,
-        telephone_number: this.mainGrid.mainCells[index][5].value,
-        address_line_1: this.mainGrid.mainCells[index][6].value,
-        address_line_2: this.mainGrid.mainCells[index][7].value,
-        date_of_birth: this.mainGrid.mainCells[index][8].value,
-        gross_salary_FY2019_20: this.mainGrid.mainCells[index][9].value,
-        gross_salary_FY2020_21: this.mainGrid.mainCells[index][10].value,
-        gross_salary_FY2021_22: this.mainGrid.mainCells[index][11].value,
-        gross_salary_FY2022_23: this.mainGrid.mainCells[index][12].value,
-        gross_salary_FY2023_24: this.mainGrid.mainCells[index][13].value,
+      const params = {
+        Value: value,
+        Id: index + 1, // The id starts from 1, so add 1 to the index
+        Column: column,
       };
       // Send a POST request to update the record in the server
       let response = await fetch(
@@ -170,7 +158,7 @@ export class FileOperations {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(dataModel),
+          body: JSON.stringify(params),
         }
       );
 

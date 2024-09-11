@@ -96,6 +96,24 @@ export class TopGrid {
       this.topCells[i].width = this.dimension.cWidthPrefixSum[i + 1] - this.dimension.cWidthPrefixSum[i];
       this.topCells[i].drawCell(); // Draw the cell on the canvas
     }
+
+    if (this.dimension.selectedMain.length > 0) {
+      this.selectionBoundary()
+    }
+  }
+
+  selectionBoundary() {
+    // Update the bounding box for the selection
+    this.xValStart = this.dimension.selectedTop[0].xVal;
+    this.yValStart = this.dimension.selectedTop[0].yVal + this.dimension.selectedTop[0].height - 2;
+    this.xValEnd = this.dimension.selectedTop[this.dimension.selectedTop.length - 1].xVal + this.dimension.selectedTop[this.dimension.selectedTop.length - 1].width;
+    this.yValEnd = this.dimension.selectedTop[0].yVal + this.dimension.selectedTop[0].height - 2;
+
+    // Draw border around the selection
+    this.topCtx.lineWidth = 2;
+    this.topCtx.strokeStyle = "rgba(0, 128, 0, 0.8)";
+    this.topCtx.strokeRect(this.xValStart, this.yValStart, this.xValEnd - this.xValStart, this.yValEnd - this.yValStart);
+    this.topCtx.lineWidth = 1;
   }
 
   /**
