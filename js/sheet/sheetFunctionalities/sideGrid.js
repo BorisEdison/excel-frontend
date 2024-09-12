@@ -102,10 +102,10 @@ export class SideGrid {
 
   selectionBoundary() {
     // Update the bounding box for the selection
-    this.xValStart =  this.dimension.selectedSide[0].xVal + this.dimension.selectedSide[0].width - 2;
-    this.yValStart = this.dimension.selectedSide[0].yVal;
-    this.xValEnd = this.dimension.selectedSide[0].xVal + this.dimension.selectedSide[0].width - 2;
-    this.yValEnd = this.dimension.selectedSide[this.dimension.selectedSide.length - 1].yVal + this.dimension.selectedSide[this.dimension.selectedSide.length - 1].height;
+    this.xValStart =  this.dimension.selectedSide[0].xVal + this.dimension.selectedSide[0].width - this.dimension.shiftLeftX- 2;
+    this.yValStart = this.dimension.selectedSide[0].yVal - this.dimension.shiftTopY;
+    this.xValEnd = this.dimension.selectedSide[0].xVal + this.dimension.selectedSide[0].width - this.dimension.shiftLeftX - 2;
+    this.yValEnd = this.dimension.selectedSide[this.dimension.selectedSide.length - 1].yVal + this.dimension.selectedSide[this.dimension.selectedSide.length - 1].height - this.dimension.shiftTopY;
 
     // Draw border around the selection
     this.sideCtx.lineWidth = 2;

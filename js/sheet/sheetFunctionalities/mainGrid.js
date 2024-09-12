@@ -152,43 +152,19 @@ export class MainGrid {
 
   selectionBoundary() {
     // Update the bounding box for the selection
+    const lasttIndexX = this.dimension.getColumnNumber(this.dimension.selectedTop[this.dimension.selectedTop.length - 1].value);
+    const width = this.dimension.cWidthPrefixSum[lasttIndexX] - this.dimension.cWidthPrefixSum[lasttIndexX - 1];
 
-    const lasttIndexX = this.dimension.getColumnNumber(
-      this.dimension.selectedTop[this.dimension.selectedTop.length - 1].value
-    );
-    const width =
-      this.dimension.cWidthPrefixSum[lasttIndexX] -
-      this.dimension.cWidthPrefixSum[lasttIndexX - 1];
+    const lastIndexY = this.dimension.selectedSide[this.dimension.selectedSide.length - 1].value;
+    const height = this.dimension.rHeightPrefixSum[lastIndexY] - this.dimension.rHeightPrefixSum[lastIndexY - 1];
 
-    const lastIndexY =
-      this.dimension.selectedSide[this.dimension.selectedSide.length - 1];
-    const height =
-      this.dimension.rHeightPrefixSum[lastIndexY] -
-      this.dimension.rHeightPrefixSum[lastIndexY - 1];
-
-    this.xValStart = this.dimension.selectedTop.length
-      ? this.dimension.selectedTop[0].xVal
-      : this.dimension.selectedMain[0].xVal;
+    this.xValStart = this.dimension.selectedTop[0].xVal - this.dimension.shiftLeftX;
       
-    this.yValStart = this.dimension.selectedSide.length
-      ? this.dimension.selectedSide[0].yVal
-      : this.dimension.selectedMain[0].yVal;
+    this.yValStart = this.dimension.selectedSide[0].yVal - this.dimension.shiftTopY;
 
-    this.xValEnd = this.dimension.selectedTop.length
-      ? this.dimension.selectedTop[this.dimension.selectedTop.length - 1].xVal +
-        width
-      : this.dimension.selectedMain[this.dimension.selectedMain.length - 1]
-          .xVal +
-        this.dimension.selectedMain[this.dimension.selectedMain.length - 1]
-          .width;
+    this.xValEnd = this.dimension.selectedTop[this.dimension.selectedTop.length - 1].xVal - this.dimension.shiftLeftX + width;
 
-    this.yValEnd = this.dimension.selectedSide.length
-      ? this.dimension.selectedSide[this.dimension.selectedSide.length - 1]
-          .yVal + height
-      : this.dimension.selectedMain[this.dimension.selectedMain.length - 1]
-          .yVal +
-        this.dimension.selectedMain[this.dimension.selectedMain.length - 1]
-          .height;
+    this.yValEnd = this.dimension.selectedSide[this.dimension.selectedSide.length - 1].yVal - this.dimension.shiftTopY + height;
 
     // Draw border around the selection
     this.mainCtx.lineWidth = 2;

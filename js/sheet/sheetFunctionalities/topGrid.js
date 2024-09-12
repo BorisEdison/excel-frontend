@@ -104,10 +104,10 @@ export class TopGrid {
 
   selectionBoundary() {
     // Update the bounding box for the selection
-    this.xValStart = this.dimension.selectedTop[0].xVal;
-    this.yValStart = this.dimension.selectedTop[0].yVal + this.dimension.selectedTop[0].height - 2;
-    this.xValEnd = this.dimension.selectedTop[this.dimension.selectedTop.length - 1].xVal + this.dimension.selectedTop[this.dimension.selectedTop.length - 1].width;
-    this.yValEnd = this.dimension.selectedTop[0].yVal + this.dimension.selectedTop[0].height - 2;
+    this.xValStart = this.dimension.selectedTop[0].xVal - this.dimension.shiftLeftX;
+    this.yValStart = this.dimension.selectedTop[0].yVal + this.dimension.selectedTop[0].height - this.dimension.shiftTopY - 2;
+    this.xValEnd = this.dimension.selectedTop[this.dimension.selectedTop.length - 1].xVal + this.dimension.selectedTop[this.dimension.selectedTop.length - 1].width - this.dimension.shiftLeftX;
+    this.yValEnd = this.dimension.selectedTop[0].yVal + this.dimension.selectedTop[0].height - this.dimension.shiftTopY - 2;
 
     // Draw border around the selection
     this.topCtx.lineWidth = 2;

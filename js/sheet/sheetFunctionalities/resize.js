@@ -118,10 +118,10 @@ export class Resize {
       // When not resizing
       this.updateResizeIndex(event);
       this.topGrid.topCanvas.style.cursor =
-        this.indX === -1 ? "default" : "col-resize"; // Change cursor based on whether resizing is possible
+        this.indX === -1 ? "grab" : "col-resize"; // Change cursor based on whether resizing is possible
       
       this.sideGrid.sideCanvas.style.cursor =
-        this.indY === -1 ? "default" : "row-resize";
+        this.indY === -1 ? "grab" : "row-resize";
     }
   }
 
@@ -159,8 +159,8 @@ export class Resize {
       const mid = Math.floor((left + right) / 2);
 
       if (
-        distance >= prefixSum[mid] - 5 &&
-        distance <= prefixSum[mid] + 5
+        distance >= prefixSum[mid] - 3 &&
+        distance <= prefixSum[mid] + 3
       ) {
         return mid; // Found the column index
       } else if (prefixSum[mid] < distance) {

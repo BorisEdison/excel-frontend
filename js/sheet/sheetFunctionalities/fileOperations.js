@@ -11,7 +11,7 @@ export class FileOperations {
     this.mainGrid = mainGrid;
 
     this.init(); // Set up event listeners
-    this.signalR()
+    this.signalR();
   }
 
   /**
@@ -28,42 +28,42 @@ export class FileOperations {
       });
   }
 
-  signalR() {    
-    let progressDivElement = document.querySelector(".progress")
-    let progressBarElement = document.querySelector(".progress-bar")
+  signalR() {
+    let progressDivElement = document.querySelector(".progress");
+    let progressBarElement = document.querySelector(".progress-bar");
 
     this.connection = new signalR.HubConnectionBuilder()
-    .withUrl("https://localhost:7220/progressHub", {
-      withCredentials: true,
-    })
-    .build();
-    
-    this.connection.on("ReceiveUpdate", (message) =>  {
-      progressDivElement.style.display = "block"
+      .withUrl("https://localhost:7220/progressHub", {
+        withCredentials: true,
+      })
+      .build();
 
-      message = parseInt(message)
+    this.connection.on("ReceiveUpdate", (message) => {
+      progressDivElement.style.display = "block";
+
+      message = parseInt(message);
 
       progressBarElement.style.width = message + "%";
-      progressBarElement.innerText = message + "%"; 
+      progressBarElement.innerText = message + "%";
 
-      if(message == 100){
+      if (message == 100) {
         setTimeout(() => {
           const offset = 0;
           const limit = this.mainGrid.mainCells.length;
-  
+
           // Fetch the updated file data and render the grid
           this.getFile(offset, limit);
-        },1000)
+        }, 1000);
 
         setTimeout(() => {
           progressDivElement.style.display = "none";
-            progressBarElement.style.width = 0 + "%";
-            progressBarElement.innerText = 0 + "%"
+          progressBarElement.style.width = 0 + "%";
+          progressBarElement.innerText = 0 + "%";
         }, 2000);
       }
     });
 
-    this.connection.start().catch( (err) => {
+    this.connection.start().catch((err) => {
       return console.error(err.toString());
     });
   }
@@ -150,9 +150,10 @@ export class FileOperations {
         Id: index + 1, // The id starts from 1, so add 1 to the index
         Column: column,
       };
+      console.log(params);
       // Send a POST request to update the record in the server
       let response = await fetch(
-        "https://localhost:7220/ExcelApi/UpdateRecord",
+        "https://localhost:7220/ExcelApi/updateRecord",
         {
           method: "POST",
           headers: {
@@ -189,9 +190,34 @@ export class FileOperations {
           body: JSON.stringify(params),
         }
       );
-      console.log("reponse received");
+
+      // Optionally handle the response here if necessary (e.g., check response status)
+      if (!response.ok) {
+        throw new Error(`Server responded with status ${response.status}`);
+      }
     } catch (error) {
       console.error("Could not get items:", error);
+    }
+  }
+
+  async deleteRow(id) {
+    try {
+      const response = await fetch(
+        "https://localhost:7220/ExcelApi/deleteRow",
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id }),
+        }
+      );
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Server responded with an error:", errorText);
+      }
+    } catch (error) {
+      console.error("Could not delete items:", error);
     }
   }
 }
