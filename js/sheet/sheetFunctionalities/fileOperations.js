@@ -162,14 +162,40 @@ export class FileOperations {
           body: JSON.stringify(params),
         }
       );
-
+      const res = await response.json()
+      
       // Optionally handle the response here if necessary (e.g., check response status)
-      if (!response.ok) {
+      if (!res) {
         throw new Error(`Server responded with status ${response.status}`);
       }
     } catch (error) {
       // Log any errors that occur during the update
       console.error("error in updating the cell", error);
+    }
+  }
+  async findIds(findText) {
+
+    try {
+      const response = await fetch(
+        "https://localhost:7220/ExcelApi/FindIds",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(findText),
+        }
+      );
+
+      const res = await response.json()
+
+      return res;
+
+      if (!response.ok) {
+        throw new Error(`Server responded with status ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Could not get items:", error);
     }
   }
 

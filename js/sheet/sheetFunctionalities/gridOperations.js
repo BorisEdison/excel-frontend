@@ -1,12 +1,14 @@
 export class GridOperations {
-  constructor(dimension, mainGrid, sideGrid, topGrid, fileOperations) {
+  constructor(dimension, mainGrid, sideGrid, topGrid, scroll, fileOperations) {
     this.dimension = dimension;
     this.mainGrid = mainGrid;
     this.sideGrid = sideGrid;
     this.topGrid = topGrid;
+    this.scroll = scroll;
     this.fileOperations = fileOperations;
 
     this.cellInput = document.querySelector(".input-box");
+    this.findBtn = document.querySelector(".find-btn")
     this.findReplaceBtn = document.querySelector(".find-replace-btn");
 
     // Initial state for selection
@@ -98,10 +100,45 @@ export class GridOperations {
       }
     });
 
+    this.findBtn.addEventListener(
+      "click",
+      this.find.bind(this)
+    )
     this.findReplaceBtn.addEventListener(
       "click",
       this.findAndReplace.bind(this)
     );
+  }
+
+  async find(){
+    const findText = prompt("Enter the value you want to find")
+    if(findText){
+      const ids = await this.fileOperations.findIds(findText)
+
+      console.log(ids)
+      console.log("sidecells length", this.mainGrid.mainCells.length)
+      for(let id of ids){
+        if(id < this.sideGrid.sideCells.length)
+          {
+            this.containerHeight =
+            this.dimension.rHeightPrefixSum[
+              this.dimension.rHeightPrefixSum.length - 1
+            ];
+
+          console.log(this.dimension.rHeightPrefixSum[id])
+          this.dimension.shiftTopY = this.dimension.rHeightPrefixSum[id - 1]
+          this.dimension.shiftBottomY = this.dimension.shiftTopY + this.mainGrid.mainCanvas.height;
+
+          this.dimension.topIndex = this.dimension.cellYIndex(this.dimension.shiftTopY);
+          this.dimension.bottomIndex = this.dimension.cellYIndex(this.dimension.shiftBottomY);
+            console.log((this.dimension.shiftTopY)/(this.containerHeight-this.mainGrid.mainCanvas.height), this.scroll.maxYTravel)
+          this.scroll.sliderY.style.top = (this.dimension.shiftTopY)/(this.containerHeight-this.mainGrid.mainCanvas.height)   * this.scroll.maxYTravel + "px";
+          this.mainGrid.render()
+          this.sideGrid.render()
+        }
+        return
+      }
+    }
   }
 
   async findAndReplace() {
@@ -201,10 +238,11 @@ export class GridOperations {
       return;
     }
 
+    await this.fileOperations.updateCell(value, index, column);
+
     cell.value = value;
     cell.drawCell();
     console.log(value, index, column);
-    await this.fileOperations.updateCell(value, index, column);
   }
 
   // Handle mouse move event

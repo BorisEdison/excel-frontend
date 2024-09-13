@@ -60,16 +60,6 @@ export class Sheet {
      */
     this.fileOperations = new FileOperations(this.dimension, this.mainGrid);
     /**
-     * @type { GridOperations }
-     */
-    this.gridOperations = new GridOperations(
-      this.dimension,
-      this.mainGrid,
-      this.sideGrid,
-      this.topGrid,
-      this.fileOperations
-    );
-    /**
      * @type { Scroll }
      */
     this.scroll = new Scroll(
@@ -77,7 +67,18 @@ export class Sheet {
       this.mainGrid,
       this.sideGrid,
       this.topGrid,
-      this.gridOperations,
+      // this.gridOperations,
+      this.fileOperations
+    );
+    /**
+     * @type { GridOperations }
+     */
+    this.gridOperations = new GridOperations(
+      this.dimension,
+      this.mainGrid,
+      this.sideGrid,
+      this.topGrid,
+      this.scroll,
       this.fileOperations
     );
     /**
@@ -129,8 +130,6 @@ export class Sheet {
   createSheetElements() {
     // Create the corner canvas element (top-left corner of the grid)
     const cornerCanvasElement = document.createElement("canvas");
-    cornerCanvasElement.setAttribute("width", "60");
-    cornerCanvasElement.setAttribute("height", "20");
     cornerCanvasElement.setAttribute("class", "corner-canvas");
 
     // Create the top canvas element for the top grid (headers)

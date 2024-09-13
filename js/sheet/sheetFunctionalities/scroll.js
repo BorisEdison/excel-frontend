@@ -11,7 +11,7 @@ export class Scroll {
     mainGrid,
     sideGrid,
     topGrid,
-    gridOperations,
+    // gridOperations,
     fileOperations
   ) {
     // Initialize properties
@@ -34,7 +34,7 @@ export class Scroll {
     /**
      * @type { GridOperations }
      */
-    this.gridOperations = gridOperations;
+    // this.gridOperations = gridOperations;
     /**
      * @type { FileOperations }
      */
@@ -134,6 +134,8 @@ export class Scroll {
   }
 
   eventListeners() {
+    this.maxYTravel =this.getAttInt(this.trackY, "height") -this.getAttInt(this.sliderY, "height");
+
     // Bind mouse and touch events for vertical scrolling
     this.sliderY.addEventListener(
       "mousedown",
@@ -243,7 +245,7 @@ export class Scroll {
   
   this.mainGrid.render();
   this.sideGrid.render();
-  this.gridOperations.inputBox();
+  // this.gridOperations.inputBox();
  }
   
   /**
@@ -305,7 +307,7 @@ export class Scroll {
  
     this.mainGrid.render();
     this.topGrid.render();
-    this.gridOperations.inputBox();
+    // this.gridOperations.inputBox();
   }
   
   /**
